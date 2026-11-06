@@ -37,7 +37,7 @@ No accounts, passwords or API keys are used. All endpoints are public and key-fr
 - Part of a km counts as a full km
 - Gasoline-price bands raise the fare in steps
 
-These figures are **not yet verified** with the city, and the app labels them "Unconfirmed". To update the fare without a new APK, push this repo to GitHub and set `fareMatrixUrl` in `src/environments/environment*.ts` to the raw URL of `src/assets/fare-matrix.json`.
+These figures are **not yet verified** with the city, and the app labels them "Unconfirmed". The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
 
 ## Setup (development)
 

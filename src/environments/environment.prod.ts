@@ -7,7 +7,7 @@ export const environment = {
    * https://raw.githubusercontent.com/<user>/trimeter-app/main/src/assets/fare-matrix.json
    * Leave it empty to use only the copy bundled inside the app.
    */
-  fareMatrixUrl: '',
+  fareMatrixUrl: 'https://raw.githubusercontent.com/mintchoco0624/trimeter-app/main/src/assets/fare-matrix.json',
   bundledFareMatrixUrl: 'assets/fare-matrix.json',
   /** OpenStreetMap Nominatim: turns coordinates into place names, and searches places. */
   nominatimUrl: 'https://nominatim.openstreetmap.org',
