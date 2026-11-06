@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { type Page, expect, test } from '@playwright/test';
 
 import { MOCK_GEOLOCATION, densify, loadRoute, pushFix } from './mock-gps';
 
@@ -6,7 +6,7 @@ test.beforeEach(async ({ context }) => {
   await context.addInitScript(MOCK_GEOLOCATION);
 });
 
-async function finishOnboarding(page: import('@playwright/test').Page, type: string) {
+async function finishOnboarding(page: Page, type: string) {
   await page.goto('/');
   await expect(page.getByTestId('step-welcome')).toBeVisible();
   await page.getByTestId('next').click();

@@ -2,7 +2,6 @@ import type { Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-
 /**
  * Replaces navigator.geolocation with a fake we can drive from the test,
  * so a whole tricycle trip can be "ridden" in a few seconds.
