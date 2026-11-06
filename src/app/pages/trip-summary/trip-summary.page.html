@@ -15,7 +15,13 @@
 <ion-content class="summary">
   @if (trip(); as t) {
   <div class="map-box">
-    <app-trip-map [route]="t.route" [from]="t.from" [to]="t.to" [fitRoute]="true"></app-trip-map>
+    <app-trip-map
+      [route]="t.route"
+      [from]="t.from"
+      [to]="t.to"
+      [fitRoute]="true"
+      attributionPosition="topright"
+    ></app-trip-map>
   </div>
 
   <div class="body">

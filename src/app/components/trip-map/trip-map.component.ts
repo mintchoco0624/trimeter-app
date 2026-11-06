@@ -1,14 +1,5 @@
-import type {
-  ElementRef,
-  Component,
-  type OnDestroy,
-  afterNextRender,
-  effect,
-  input,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import type { ElementRef, OnDestroy } from '@angular/core';
+import { Component, afterNextRender, effect, input, output, signal, viewChild } from '@angular/core';
 import * as L from 'leaflet';
 
 import { environment } from '../../../environments/environment';
@@ -37,6 +28,8 @@ export class TripMapComponent implements OnDestroy {
   readonly follow = input(false);
   /** Zoom to show the whole route whenever it changes. */
   readonly fitRoute = input(false);
+  /** Where the OpenStreetMap credit goes; move it when a panel covers the bottom of the map. */
+  readonly attributionPosition = input<L.ControlPosition>('bottomright');
   readonly mapClick = output<LatLng>();
 
   private readonly container = viewChild.required<ElementRef<HTMLDivElement>>('map');
@@ -88,10 +81,11 @@ export class TripMapComponent implements OnDestroy {
 
   private createMap(): void {
     const el = this.container().nativeElement;
-    this.map = L.map(el, { zoomControl: false, attributionControl: true }).setView(
+    this.map = L.map(el, { zoomControl: false, attributionControl: false }).setView(
       [CABANATUAN.lat, CABANATUAN.lng],
       14,
     );
+    L.control.attribution({ position: this.attributionPosition(), prefix: false }).addTo(this.map);
     L.tileLayer(environment.tileUrl, {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',

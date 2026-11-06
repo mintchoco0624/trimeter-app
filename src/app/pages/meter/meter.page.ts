@@ -119,6 +119,18 @@ export class MeterPage implements OnDestroy {
     });
   }
 
+  /** Ionic lifecycle: each time the Meter tab opens, show where the user is (if already allowed). */
+  async ionViewDidEnter(): Promise<void> {
+    if (this.tracking() || this.preview() || !(await this.location.isGranted())) return;
+    try {
+      const here = await this.location.getCurrent();
+      this.preview.set(here);
+      this.map()?.centerOn(here, 15);
+    } catch {
+      // no fix yet: the user can tap "Locate me"
+    }
+  }
+
   async locateMe(): Promise<void> {
     try {
       await this.location.ensurePermission();

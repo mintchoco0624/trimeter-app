@@ -15,13 +15,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [scrollY]="false" class="estimate">
+<ion-content [scrollY]="false" class="estimate">
   <app-trip-map
     class="map"
     [route]="path()"
     [from]="from()"
     [to]="to()"
     [fitRoute]="true"
+    attributionPosition="topright"
     (mapClick)="onMapClick($event)"
   ></app-trip-map>
 

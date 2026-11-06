@@ -15,7 +15,8 @@ export default defineConfig({
   projects: [
     {
       name: 'Mobile Chrome',
-      use: { ...devices['Pixel 7'] },
+      // channel 'chrome' uses the installed Google Chrome instead of Playwright's own download.
+      use: { ...devices['Pixel 7'], channel: 'chrome', permissions: ['geolocation'] },
     },
   ],
   webServer: {

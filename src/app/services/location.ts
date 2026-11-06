@@ -78,6 +78,15 @@ export class LocationService {
     }
   }
 
+  /** True when location permission was already given (never shows a prompt). */
+  async isGranted(): Promise<boolean> {
+    try {
+      return (await Geolocation.checkPermissions()).location === 'granted';
+    } catch {
+      return false;
+    }
+  }
+
   async getCurrent(): Promise<TrackPoint> {
     const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 15000 });
     return this.toPoint(pos);

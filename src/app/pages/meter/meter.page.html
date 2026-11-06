@@ -10,8 +10,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [scrollY]="false" class="meter">
-  <app-trip-map class="map" [route]="route()" [current]="current()" [follow]="tracking()"></app-trip-map>
+<ion-content [scrollY]="false" class="meter">
+  <app-trip-map
+    class="map"
+    [route]="route()"
+    [current]="current()"
+    [follow]="tracking()"
+    attributionPosition="topright"
+  ></app-trip-map>
 
   <div class="status" role="status" aria-live="polite">
     @if (tracking()) { @if (gpsError()) {
