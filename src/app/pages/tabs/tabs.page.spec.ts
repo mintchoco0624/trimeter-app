@@ -1,4 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { testProviders } from '../../../testing/test-providers';
+
 import { TabsPage } from './tabs.page';
 
 describe('TabsPage', () => {
@@ -6,6 +9,7 @@ describe('TabsPage', () => {
   let fixture: ComponentFixture<TabsPage>;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({ providers: testProviders });
     fixture = TestBed.createComponent(TabsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

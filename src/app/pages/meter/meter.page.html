@@ -1,13 +1,93 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>meter</ion-title>
+<ion-header>
+  <ion-toolbar class="tm-brand">
+    <img src="assets/img/wordmark.png" alt="TriMeter" class="wordmark" />
+    <ion-buttons slot="end">
+      <ion-chip class="passenger" routerLink="/tabs/fare-info" aria-label="Passenger type, tap to change">
+        <ion-icon name="person" aria-hidden="true"></ion-icon>
+        <ion-label>{{ passengerLabel() }}</ion-label>
+      </ion-chip>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">meter</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" [scrollY]="false" class="meter">
+  <app-trip-map class="map" [route]="route()" [current]="current()" [follow]="tracking()"></app-trip-map>
+
+  <div class="status" role="status" aria-live="polite">
+    @if (tracking()) { @if (gpsError()) {
+    <span class="pill pill--warn"><ion-icon name="warning"></ion-icon> {{ gpsError() }}</span>
+    } @else if (weakSignal()) {
+    <span class="pill pill--warn"
+      ><ion-icon name="warning"></ion-icon> Weak GPS signal (±{{ accuracy() | number: '1.0-0' }} m)</span
+    >
+    } @else if (accuracy() !== null) {
+    <span class="pill pill--ok"><span class="dot"></span> GPS tracking ±{{ accuracy() | number: '1.0-0' }} m</span>
+    } @else {
+    <span class="pill"><ion-spinner name="dots"></ion-spinner> Finding GPS signal…</span>
+    } } @else {
+    <span class="pill">Tap <strong>Start Trip</strong> when the ride begins</span>
+    }
+  </div>
+
+  <ion-fab vertical="top" horizontal="end" slot="fixed" class="fabs">
+    <ion-fab-button size="small" color="light" (click)="locateMe()" aria-label="Show my location">
+      <ion-icon name="locate"></ion-icon>
+    </ion-fab-button>
+    @if (!tracking()) {
+    <ion-fab-button
+      size="small"
+      color="secondary"
+      routerLink="/estimate"
+      aria-label="Manual fare estimate"
+      data-testid="manual"
+    >
+      <ion-icon name="map"></ion-icon>
+    </ion-fab-button>
+    }
+  </ion-fab>
+
+  <section class="sheet" aria-label="Fare meter">
+    <div class="grip" aria-hidden="true"></div>
+    <div class="tiles">
+      <div class="tile">
+        <span class="tm-label">Distance travelled</span>
+        <span class="big" data-testid="distance">{{ distanceKm() | number: '1.2-2' }}<small> km</small></span>
+        <span class="sub">Time {{ elapsedSec() | duration }}</span>
+      </div>
+      <div class="tile tile--fare">
+        <span class="tm-label">Fare to pay</span>
+        <span class="big tm-peso" data-testid="fare">{{ breakdown()?.total | peso }}</span>
+        <span class="sub">
+          @if (breakdown(); as b) { @if (b.succeedingKm > 0) { {{ b.baseFare | peso }} + {{ b.succeedingKm }} km × {{
+          b.succeedingRate | peso }} } @else { Base fare, first {{ b.baseKm }} km } }
+        </span>
+      </div>
+    </div>
+
+    @if (matrix()?.status === 'unconfirmed') {
+    <p class="disclaimer">Sample fare data: verify with the City Tricycle Regulatory Board.</p>
+    } @if (!tracking()) {
+    <ion-button expand="block" shape="round" class="cta" (click)="startTrip()" [disabled]="busy()" data-testid="start">
+      @if (busy()) {
+      <ion-spinner name="crescent"></ion-spinner>
+      } @else {
+      <ion-icon slot="start" name="play"></ion-icon> Start Trip }
+    </ion-button>
+    } @else {
+    <ion-button
+      expand="block"
+      shape="round"
+      color="danger"
+      class="cta"
+      (click)="endTrip()"
+      [disabled]="busy()"
+      data-testid="end"
+    >
+      @if (busy()) {
+      <ion-spinner name="crescent"></ion-spinner>
+      } @else {
+      <ion-icon slot="start" name="stop"></ion-icon> End Trip }
+    </ion-button>
+    }
+  </section>
 </ion-content>

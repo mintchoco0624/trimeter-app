@@ -1,13 +1,78 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>onboarding</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="onboarding">
+  <div class="blob blob--top" aria-hidden="true"></div>
+  <div class="blob blob--bottom" aria-hidden="true"></div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">onboarding</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <main class="wrap">
+    @switch (step()) { @case (0) {
+    <section class="slide center" data-testid="step-welcome">
+      <img src="assets/img/logo.png" alt="TriMeter logo" class="logo" />
+      <h1>Fair fares for every tricycle ride.</h1>
+      <p>
+        TriMeter measures your trip with GPS and computes the fare from the Cabanatuan City fare matrix, so you know the
+        right amount before you pay.
+      </p>
+    </section>
+    } @case (1) {
+    <section class="slide" data-testid="step-how">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li>
+          <ion-icon name="location" aria-hidden="true"></ion-icon>
+          <div><strong>Start Trip when you ride.</strong> GPS measures the real distance while you move.</div>
+        </li>
+        <li>
+          <ion-icon name="cash" aria-hidden="true"></ion-icon>
+          <div><strong>Watch the fare live.</strong> The first 3 km is the base fare; each extra km is added.</div>
+        </li>
+        <li>
+          <ion-icon name="shield-checkmark" aria-hidden="true"></ion-icon>
+          <div><strong>End Trip and compare.</strong> You get a receipt and can check if the driver overcharged.</div>
+        </li>
+      </ol>
+      <p class="note">No GPS? Use <strong>Manual estimate</strong> to pick your origin and destination on the map.</p>
+    </section>
+    } @case (2) {
+    <section class="slide" data-testid="step-passenger">
+      <h2>Who is riding?</h2>
+      <p>Students, seniors and PWDs pay the discounted fare. You can change this later in Fare Info.</p>
+      <div class="options" role="radiogroup" aria-label="Passenger type">
+        @for (o of options; track o.type) {
+        <button
+          type="button"
+          class="option"
+          role="radio"
+          [attr.aria-checked]="selected() === o.type"
+          [class.option--on]="selected() === o.type"
+          (click)="selected.set(o.type)"
+        >
+          <ion-icon [name]="o.icon" aria-hidden="true"></ion-icon>
+          <span class="option__name">{{ labels[o.type] }}</span>
+          <span class="option__hint">{{ o.hint }}</span>
+        </button>
+        }
+      </div>
+    </section>
+    } }
+
+    <footer class="nav">
+      <div class="dots" aria-hidden="true">
+        @for (i of [0, 1, 2]; track i) {
+        <span [class.on]="i === step()"></span>
+        }
+      </div>
+      <div class="buttons">
+        @if (step() > 0) {
+        <ion-button fill="clear" color="light" (click)="back()">Back</ion-button>
+        } @if (step() < lastStep) {
+        <ion-button color="secondary" shape="round" (click)="next()" data-testid="next">
+          Next <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+        } @else {
+        <ion-button color="secondary" shape="round" (click)="finish()" data-testid="get-started">
+          Get started <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+        }
+      </div>
+    </footer>
+  </main>
 </ion-content>

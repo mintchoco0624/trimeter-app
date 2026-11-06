@@ -34,4 +34,62 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* Dark mode is off: the brand colours and the street map are designed for light mode. */
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+/* ---------- TriMeter shared styles ---------- */
+
+ion-toolbar.tm-brand {
+  --background: var(--tm-navy);
+  --color: #fff;
+}
+
+.tm-card {
+  background: var(--tm-card);
+  border-radius: var(--tm-radius);
+  box-shadow: 0 6px 24px rgba(27, 42, 92, 0.08);
+  padding: 16px;
+}
+
+.tm-peso {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--tm-navy);
+}
+
+.tm-muted {
+  color: var(--tm-muted);
+}
+
+.tm-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Leaflet markers are created outside Angular components, so they are styled here. */
+.tm-marker {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  font: 800 12px/1 system-ui, sans-serif;
+  color: #fff;
+}
+.tm-marker--here {
+  background: var(--tm-navy);
+  animation: tm-pulse 1.6s ease-out infinite;
+}
+.tm-marker--from {
+  background: #1f9d55;
+}
+.tm-marker--to {
+  background: #d64545;
+}
+@keyframes tm-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(36, 65, 155, 0.55); }
+  100% { box-shadow: 0 0 0 18px rgba(36, 65, 155, 0); }
+}

@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { TripStorage } from './trip-storage';
 
-describe('TripStorage', () => {
-  let service: TripStorage;
+import { testProviders } from '../../testing/test-providers';
+
+import { TripStorageService } from './trip-storage';
+
+describe('TripStorageService', () => {
+  let service: TripStorageService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TripStorage);
+    TestBed.configureTestingModule({ providers: testProviders });
+    service = TestBed.inject(TripStorageService);
   });
 
   it('should be created', () => {

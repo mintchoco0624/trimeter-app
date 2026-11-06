@@ -1,13 +1,16 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>tabs</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tabs</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="meter">
+      <ion-icon name="speedometer" aria-hidden="true"></ion-icon>
+      <ion-label>Meter</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="history">
+      <ion-icon name="receipt" aria-hidden="true"></ion-icon>
+      <ion-label>History</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="fare-info">
+      <ion-icon name="information-circle" aria-hidden="true"></ion-icon>
+      <ion-label>Fare Info</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

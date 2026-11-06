@@ -1,13 +1,119 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>trip-summary</ion-title>
+<ion-header>
+  <ion-toolbar class="tm-brand">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/history" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Trip receipt</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="share()" aria-label="Share receipt" data-testid="share">
+        <ion-icon slot="icon-only" name="share-social"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">trip-summary</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="summary">
+  @if (trip(); as t) {
+  <div class="map-box">
+    <app-trip-map [route]="t.route" [from]="t.from" [to]="t.to" [fitRoute]="true"></app-trip-map>
+  </div>
+
+  <div class="body">
+    <section class="tm-card total-card">
+      <span class="tm-label">{{ t.mode === 'auto' ? 'Fair fare (GPS meter)' : 'Estimated fare (manual)' }}</span>
+      <span class="total tm-peso" data-testid="receipt-total">{{ t.fare.total | peso }}</span>
+      <span class="tm-muted small">{{ t.startedAt | date: 'MMM d, y · h:mm a' }} · {{ labels[t.passengerType] }}</span>
+    </section>
+
+    <section class="tm-card places">
+      <div class="place">
+        <span class="pin pin--a">A</span>
+        <div>
+          <span class="tm-label">From</span>
+          <p>{{ t.from.label }}</p>
+        </div>
+      </div>
+      <div class="place">
+        <span class="pin pin--b">B</span>
+        <div>
+          <span class="tm-label">To</span>
+          <p>{{ t.to.label }}</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div><span class="tm-label">Distance</span><strong>{{ t.distanceKm | number: '1.2-2' }} km</strong></div>
+        <div><span class="tm-label">Time</span><strong>{{ t.durationSec | duration }}</strong></div>
+        <div><span class="tm-label">Measured by</span><strong>{{ t.distanceSource }}</strong></div>
+      </div>
+    </section>
+
+    <section class="tm-card breakdown" aria-label="Fare breakdown">
+      <h2>Fare breakdown</h2>
+      <div class="row">
+        <span>Base fare (first {{ t.fare.baseKm }} km)</span><span>{{ t.fare.baseFare | peso }}</span>
+      </div>
+      <div class="row">
+        <span>Succeeding km: {{ t.fare.succeedingKm }} × {{ t.fare.succeedingRate | peso }}</span>
+        <span>{{ t.fare.succeedingFare | peso }}</span>
+      </div>
+      @if (t.fare.discounted) {
+      <div class="row discount">
+        <span>{{ labels[t.passengerType] }} discount (vs. regular {{ t.fare.regularTotal | peso }})</span>
+        <span>−{{ t.fare.savings | peso }}</span>
+      </div>
+      }
+      <div class="row total-row"><span>Total</span><span>{{ t.fare.total | peso }}</span></div>
+      <p class="tm-muted small">
+        A part of a kilometre counts as a full kilometre. Gas price band: {{ t.fare.bandLabel }}.
+      </p>
+    </section>
+
+    <section class="tm-card check" aria-label="Overcharge check">
+      <h2>Did the driver ask for more?</h2>
+      <ion-input
+        type="number"
+        inputmode="decimal"
+        label="Amount the driver asked (₱)"
+        labelPlacement="floating"
+        fill="outline"
+        min="0"
+        [(ngModel)]="asked"
+        (ionInput)="onAskedChange($event.detail.value)"
+        data-testid="asked"
+      ></ion-input>
+
+      @if (check(); as c) { @if (c.amount > 0) {
+      <div class="verdict verdict--bad" role="alert">
+        <ion-icon name="alert-circle"></ion-icon>
+        <div>
+          <strong>Overcharged by {{ c.amount | peso }} ({{ c.percent }}%).</strong>
+          <p>You can show this receipt to the driver. Complaints hotline: {{ hotline() }}.</p>
+        </div>
+      </div>
+      } @else {
+      <div class="verdict verdict--ok">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <div><strong>Fair fare.</strong> The amount is within the city fare matrix.</div>
+      </div>
+      }
+      <ion-button fill="outline" size="small" (click)="saveAsked()">Save to trip</ion-button>
+      }
+    </section>
+
+    <div class="actions">
+      <ion-button expand="block" shape="round" (click)="share()"
+        ><ion-icon slot="start" name="share-social"></ion-icon>Share receipt</ion-button
+      >
+      <ion-button expand="block" fill="clear" color="danger" (click)="remove()"
+        ><ion-icon slot="start" name="trash"></ion-icon>Delete trip</ion-button
+      >
+    </div>
+  </div>
+  } @else if (notFound()) {
+  <div class="empty">
+    <h2>Trip not found</h2>
+    <p class="tm-muted">It may have been deleted.</p>
+    <ion-button routerLink="/tabs/history">Back to history</ion-button>
+  </div>
+  }
 </ion-content>

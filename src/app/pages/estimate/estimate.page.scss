@@ -1,0 +1,135 @@
+.search-bar {
+  --background: var(--tm-navy);
+  padding: 0 6px 4px;
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+}
+
+.results {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 700;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(27, 42, 92, 0.2);
+  max-height: 45%;
+  overflow: auto;
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 600;
+  background: #fff;
+  border-radius: 26px 26px 0 0;
+  padding: 14px 16px 16px;
+  box-shadow: 0 -8px 30px rgba(27, 42, 92, 0.18);
+}
+
+.points {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding-right: 44px;
+}
+.point {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pin {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+}
+.pin--a {
+  background: var(--ion-color-success);
+}
+.pin--b {
+  background: var(--ion-color-danger);
+}
+.point-actions {
+  position: absolute;
+  right: -8px;
+  top: -10px;
+  display: flex;
+  flex-direction: column;
+}
+.point-actions ion-button {
+  margin: 0;
+  height: 26px;
+}
+
+.instruction {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--tm-muted);
+}
+
+.calc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--tm-muted);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1.5px solid #c9d1ec;
+  background: #f5f7fd;
+  border-radius: 18px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.tile--fare {
+  border-color: var(--tm-pink);
+  background: #fff6f6;
+}
+.big {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--tm-navy);
+  line-height: 1.1;
+}
+.big small {
+  font-size: 14px;
+}
+.sub {
+  font-size: 11px;
+  color: var(--tm-muted);
+}
+
+.cta {
+  margin-top: 12px;
+  height: 50px;
+  font-weight: 800;
+}

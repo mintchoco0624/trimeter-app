@@ -1,0 +1,116 @@
+.totals {
+  margin: 16px 16px 6px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--tm-navy);
+  color: #fff;
+  border-radius: var(--tm-radius);
+  padding: 14px;
+  gap: 8px;
+}
+.totals div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.totals .tm-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+.totals strong {
+  font-size: 20px;
+}
+
+.hint {
+  margin: 8px 18px 0;
+  font-size: 12px;
+}
+
+.list {
+  background: transparent;
+  padding: 6px 12px 16px;
+}
+
+.trip {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 12px;
+}
+
+.card {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 16px rgba(27, 42, 92, 0.08);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+.info p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.date ion-icon {
+  color: var(--tm-pink);
+}
+.mode {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e5eafa;
+  color: var(--tm-navy);
+}
+.mode--manual {
+  background: var(--tm-cream);
+  color: #8a5a20;
+}
+
+.nums {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 78px;
+  border-left: 1px solid #eceef5;
+  padding-left: 10px;
+}
+.km {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tm-navy);
+}
+.km small {
+  font-size: 11px;
+}
+.fare {
+  font-size: 22px;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 32px;
+}
+.empty ion-icon {
+  font-size: 64px;
+  color: var(--tm-pink);
+}
+.empty h2 {
+  font-weight: 800;
+}

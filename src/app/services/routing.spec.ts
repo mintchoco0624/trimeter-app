@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { Routing } from './routing';
 
-describe('Routing', () => {
-  let service: Routing;
+import { testProviders } from '../../testing/test-providers';
+
+import { RoutingService } from './routing';
+
+describe('RoutingService', () => {
+  let service: RoutingService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Routing);
+    TestBed.configureTestingModule({ providers: testProviders });
+    service = TestBed.inject(RoutingService);
   });
 
   it('should be created', () => {

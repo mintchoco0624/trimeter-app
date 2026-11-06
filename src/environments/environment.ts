@@ -1,16 +1,18 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
+// Public, key-free endpoints only. Never put passwords or private API keys here.
 export const environment = {
   production: false,
+  /**
+   * Where the app checks for an updated fare matrix (HttpClient GET).
+   * After pushing this project to GitHub, set it to the raw URL of src/assets/fare-matrix.json, e.g.
+   * https://raw.githubusercontent.com/<user>/trimeter-app/main/src/assets/fare-matrix.json
+   * Leave it empty to use only the copy bundled inside the app.
+   */
+  fareMatrixUrl: '',
+  bundledFareMatrixUrl: 'assets/fare-matrix.json',
+  /** OpenStreetMap Nominatim: turns coordinates into place names, and searches places. */
+  nominatimUrl: 'https://nominatim.openstreetmap.org',
+  /** OSRM demo server: road distance between two points (manual mode). */
+  osrmUrl: 'https://router.project-osrm.org',
+  /** Map tiles. */
+  tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

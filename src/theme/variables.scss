@@ -1,2 +1,50 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// TriMeter brand colours, taken from the group's proposal (navy, pink, cream).
+// For information on theming, see https://ionicframework.com/docs/theming/
+:root {
+  --ion-color-primary: #24419b;
+  --ion-color-primary-rgb: 36, 65, 155;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #203988;
+  --ion-color-primary-tint: #3a54a5;
+
+  --ion-color-secondary: #f4a5a5;
+  --ion-color-secondary-rgb: 244, 165, 165;
+  --ion-color-secondary-contrast: #1b2a5c;
+  --ion-color-secondary-contrast-rgb: 27, 42, 92;
+  --ion-color-secondary-shade: #d79191;
+  --ion-color-secondary-tint: #f5aeae;
+
+  --ion-color-tertiary: #fbe8d3;
+  --ion-color-tertiary-rgb: 251, 232, 211;
+  --ion-color-tertiary-contrast: #1b2a5c;
+  --ion-color-tertiary-contrast-rgb: 27, 42, 92;
+  --ion-color-tertiary-shade: #ddccba;
+  --ion-color-tertiary-tint: #fbead7;
+
+  --ion-color-success: #1f9d55;
+  --ion-color-success-rgb: 31, 157, 85;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #1b8a4b;
+  --ion-color-success-tint: #35a766;
+
+  --ion-color-danger: #d64545;
+  --ion-color-danger-rgb: 214, 69, 69;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #bc3d3d;
+  --ion-color-danger-tint: #da5858;
+
+  --ion-background-color: #f4f5f9;
+  --ion-text-color: #1b2a5c;
+  --ion-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --tm-navy: #24419b;
+  --tm-navy-deep: #1a2f73;
+  --tm-pink: #f4a5a5;
+  --tm-cream: #fbe8d3;
+  --tm-card: #ffffff;
+  --tm-muted: #6b7393;
+  --tm-radius: 18px;
+}

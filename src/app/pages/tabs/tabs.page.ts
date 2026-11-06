@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { informationCircle, receipt, speedometer } from 'ionicons/icons';
 
+/** Bottom navigation: Meter, History and Fare Info, like the proposal's prototype. */
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
 })
-export class TabsPage implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
+export class TabsPage {
+  constructor() {
+    addIcons({ speedometer, receipt, informationCircle });
+  }
 }

@@ -1,13 +1,86 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>estimate</ion-title>
+<ion-header>
+  <ion-toolbar class="tm-brand">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/meter" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Manual estimate</ion-title>
+  </ion-toolbar>
+  <ion-toolbar class="search-bar">
+    <ion-searchbar
+      placeholder="Search a place in Cabanatuan"
+      [debounce]="600"
+      (ionInput)="search($event.detail.value)"
+      data-testid="search"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">estimate</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" [scrollY]="false" class="estimate">
+  <app-trip-map
+    class="map"
+    [route]="path()"
+    [from]="from()"
+    [to]="to()"
+    [fitRoute]="true"
+    (mapClick)="onMapClick($event)"
+  ></app-trip-map>
+
+  @if (searching() || searchResults().length > 0) {
+  <ion-list class="results" lines="full">
+    @if (searching()) {
+    <ion-item><ion-spinner name="dots"></ion-spinner></ion-item>
+    } @for (p of searchResults(); track p.lat + ',' + p.lng) {
+    <ion-item button (click)="pickResult(p)">
+      <ion-label class="ion-text-wrap">{{ p.label }}</ion-label>
+    </ion-item>
+    }
+  </ion-list>
+  }
+
+  <section class="sheet">
+    <div class="points">
+      <div class="point">
+        <span class="pin pin--a">A</span><span class="label">{{ from()?.label ?? 'Pick-up not set' }}</span>
+      </div>
+      <div class="point">
+        <span class="pin pin--b">B</span><span class="label">{{ to()?.label ?? 'Drop-off not set' }}</span>
+      </div>
+      <div class="point-actions">
+        <ion-button size="small" fill="clear" (click)="useMyLocation()" aria-label="Use my location as pick-up">
+          <ion-icon slot="icon-only" name="locate"></ion-icon>
+        </ion-button>
+        <ion-button size="small" fill="clear" (click)="swap()" [disabled]="!from() || !to()" aria-label="Swap A and B">
+          <ion-icon slot="icon-only" name="swap-vertical"></ion-icon>
+        </ion-button>
+        <ion-button size="small" fill="clear" (click)="reset()" aria-label="Start over">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    @if (instruction()) {
+    <p class="instruction">{{ instruction() }}</p>
+    } @if (busy()) {
+    <div class="calc"><ion-spinner name="crescent"></ion-spinner> Getting road distance…</div>
+    } @else if (result() && breakdown(); as b) {
+    <div class="tiles">
+      <div class="tile">
+        <span class="tm-label">Distance</span>
+        <span class="big">{{ result()!.distanceKm | number: '1.2-2' }}<small> km</small></span>
+        <span class="sub"
+          >{{ result()!.kind === 'road' ? 'by road' : 'straight line ×1.3' }} · ~{{ result()!.durationMin | number:
+          '1.0-0' }} min</span
+        >
+      </div>
+      <div class="tile tile--fare">
+        <span class="tm-label">Expected fare</span>
+        <span class="big tm-peso" data-testid="estimate-fare">{{ b.total | peso }}</span>
+        <span class="sub">{{ b.baseFare | peso }} + {{ b.succeedingKm }} km × {{ b.succeedingRate | peso }}</span>
+      </div>
+    </div>
+    <ion-button expand="block" shape="round" class="cta" (click)="saveTrip()" data-testid="save-estimate">
+      <ion-icon slot="start" name="save"></ion-icon> Save to history
+    </ion-button>
+    }
+  </section>
 </ion-content>
