@@ -1,0 +1,7 @@
+{
+  "name": "trimeter-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
