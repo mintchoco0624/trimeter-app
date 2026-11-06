@@ -1,6 +1,6 @@
 # TriMeter
 
-A GPS-based tricycle fare meter for Cabanatuan City. BSIT-3A, Mobile Application Technology final case study.
+A GPS-based tricycle fare meter for Cabanatuan City. BSIT-4C, Mobile Application Technology final case study.
 
 TriMeter measures the real distance of a tricycle ride with the phone's GPS and computes the fare from the city fare matrix, live, while you ride. After the trip it shows a receipt with a fare breakdown and an overcharge check.
 
@@ -62,7 +62,7 @@ npm run lint
 
 ## Build the Android APK
 
-1. Install Android Studio (it includes the Android SDK and JDK 21).
+1. Install Android Studio (it includes the Android SDK). The plugins need Java 21; Gradle downloads it automatically on the first build (see `android/settings.gradle`).
 2. Build the web app and copy it into the Android project:
    ```bash
    ionic build

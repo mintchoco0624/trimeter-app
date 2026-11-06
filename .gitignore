@@ -74,3 +74,6 @@ Thumbs.db
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Built APK (submit it separately, not in the repo)
+/TriMeter.apk

@@ -1,4 +1,4 @@
-package com.bsit3a.trimeter;
+package com.bsit4c.trimeter;
 
 import com.getcapacitor.BridgeActivity;
 
