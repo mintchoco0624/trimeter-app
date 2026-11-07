@@ -8,10 +8,6 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonSearchbar,
   IonSpinner,
   IonTitle,
   IonToolbar,
@@ -19,6 +15,7 @@ import {
 import { addIcons } from 'ionicons';
 import { locate, refresh, save, swapVertical } from 'ionicons/icons';
 
+import { PlaceSearchComponent } from '../../components/place-search/place-search.component';
 import { TripMapComponent } from '../../components/trip-map/trip-map.component';
 import type { LatLng, Place, Trip } from '../../models/trip';
 import { PesoPipe } from '../../pipes/peso-pipe';
@@ -48,12 +45,9 @@ import { TripStorageService } from '../../services/trip-storage';
     IonButton,
     IonContent,
     IonIcon,
-    IonSearchbar,
-    IonList,
-    IonItem,
-    IonLabel,
     IonSpinner,
     TripMapComponent,
+    PlaceSearchComponent,
     PesoPipe,
     DecimalPipe,
   ],
@@ -75,8 +69,6 @@ export class EstimatePage {
   readonly to = signal<Place | null>(null);
   readonly result = signal<RouteResult | null>(null);
   readonly busy = signal(false);
-  readonly searchResults = signal<Place[]>([]);
-  readonly searching = signal(false);
 
   readonly path = computed<LatLng[]>(() => this.result()?.path ?? []);
   readonly breakdown = computed(() => {
@@ -110,6 +102,7 @@ export class EstimatePage {
   }
 
   async useMyLocation(): Promise<void> {
+    if (!(await this.location.isGranted()) && !(await this.feedback.explainLocation())) return;
     try {
       await this.location.ensurePermission();
       const here = await this.location.getCurrent();
@@ -121,25 +114,7 @@ export class EstimatePage {
     }
   }
 
-  async search(term: string | null | undefined): Promise<void> {
-    const q = (term ?? '').trim();
-    if (q.length < 3) {
-      this.searchResults.set([]);
-      return;
-    }
-    this.searching.set(true);
-    try {
-      this.searchResults.set(await this.geocode.search(q));
-    } catch {
-      this.searchResults.set([]);
-      await this.feedback.toast('Search needs an internet connection. You can still tap the map.', 'warning');
-    } finally {
-      this.searching.set(false);
-    }
-  }
-
   async pickResult(place: Place): Promise<void> {
-    this.searchResults.set([]);
     if (!this.from()) this.from.set(place);
     else this.to.set(place);
     this.map()?.centerOn(place, 15);
@@ -169,6 +144,8 @@ export class EstimatePage {
     const trip: Trip = {
       id: this.storage.newId(),
       mode: 'manual',
+      status: 'estimate',
+      role: this.settings.role(),
       startedAt: now,
       endedAt: now,
       durationSec: Math.round(r.durationMin * 60),

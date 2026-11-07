@@ -3,35 +3,86 @@
   <div class="blob blob--bottom" aria-hidden="true"></div>
 
   <main class="wrap">
-    @switch (step()) { @case (0) {
+    @switch (step()) { @case ('welcome') {
     <section class="slide center" data-testid="step-welcome">
       <img src="assets/img/logo.png" alt="TriMeter logo" class="logo" />
       <h1>Fair fares for every tricycle ride.</h1>
       <p>
-        TriMeter measures your trip with GPS and computes the fare from the Cabanatuan City fare matrix, so you know the
-        right amount before you pay.
+        TriMeter measures the trip with GPS and computes the fare from the Cabanatuan City fare matrix, so drivers and
+        passengers agree on the right amount.
       </p>
     </section>
-    } @case (1) {
+    } @case ('role') {
+    <section class="slide center" data-testid="step-role">
+      <h2>Welcome!<br />Please select your role</h2>
+      <p>This changes what you see. You can switch later in Account.</p>
+      <div class="roles" role="radiogroup" aria-label="Your role">
+        @for (r of roles; track r.role) {
+        <button
+          type="button"
+          class="role"
+          role="radio"
+          [attr.aria-checked]="role() === r.role"
+          [class.role--on]="role() === r.role"
+          (click)="role.set(r.role)"
+          [attr.data-testid]="'role-' + r.role"
+        >
+          <ion-icon [name]="r.icon" aria-hidden="true"></ion-icon>
+          <span class="role__title">{{ r.title }}</span>
+          <span class="role__hint">{{ r.hint }}</span>
+        </button>
+        }
+      </div>
+    </section>
+    } @case ('how') {
     <section class="slide" data-testid="step-how">
       <h2>How it works</h2>
+      @if (role() === 'driver') {
+      <ol class="steps">
+        <li>
+          <ion-icon name="walk" aria-hidden="true"></ion-icon>
+          <div>
+            <strong>Choose who is riding.</strong> Students, seniors and PWDs pay the discounted fare after showing an
+            ID.
+          </div>
+        </li>
+        <li>
+          <ion-icon name="location" aria-hidden="true"></ion-icon>
+          <div><strong>Start Trip when the ride begins.</strong> GPS measures the real distance while you drive.</div>
+        </li>
+        <li>
+          <ion-icon name="receipt" aria-hidden="true"></ion-icon>
+          <div>
+            <strong>End Trip and show the fare.</strong> Each trip is saved as a record with its fare breakdown.
+          </div>
+        </li>
+      </ol>
+      } @else {
       <ol class="steps">
         <li>
           <ion-icon name="location" aria-hidden="true"></ion-icon>
-          <div><strong>Start Trip when you ride.</strong> GPS measures the real distance while you move.</div>
+          <div>
+            <strong>Search where you are going.</strong> See the road distance and expected fare before you ride.
+          </div>
         </li>
         <li>
           <ion-icon name="cash" aria-hidden="true"></ion-icon>
-          <div><strong>Watch the fare live.</strong> The first 3 km is the base fare; each extra km is added.</div>
+          <div><strong>Start Trip when you ride.</strong> The fare updates live as GPS measures the distance.</div>
         </li>
         <li>
           <ion-icon name="shield-checkmark" aria-hidden="true"></ion-icon>
-          <div><strong>End Trip and compare.</strong> You get a receipt and can check if the driver overcharged.</div>
+          <div>
+            <strong>End Trip and compare.</strong> You get a receipt and can check if you were asked to pay more.
+          </div>
         </li>
       </ol>
-      <p class="note">No GPS? Use <strong>Manual estimate</strong> to pick your origin and destination on the map.</p>
+      }
+      <p class="note">
+        GPS is used only during a trip, and your data stays on this phone. No GPS? Use
+        <strong>Manual estimate</strong> on the Meter.
+      </p>
     </section>
-    } @case (2) {
+    } @case ('passenger') {
     <section class="slide" data-testid="step-passenger">
       <h2>Who is riding?</h2>
       <p>Students, seniors and PWDs pay the discounted fare. You can change this later in Fare Info.</p>
@@ -56,14 +107,14 @@
 
     <footer class="nav">
       <div class="dots" aria-hidden="true">
-        @for (i of [0, 1, 2]; track i) {
-        <span [class.on]="i === step()"></span>
+        @for (s of steps(); track s; let i = $index) {
+        <span [class.on]="i === index()"></span>
         }
       </div>
       <div class="buttons">
-        @if (step() > 0) {
+        @if (index() > 0) {
         <ion-button fill="clear" color="light" (click)="back()">Back</ion-button>
-        } @if (step() < lastStep) {
+        } @if (!isLast()) {
         <ion-button color="secondary" shape="round" (click)="next()" data-testid="next">
           Next <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>

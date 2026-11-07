@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { informationCircle, receipt, speedometer } from 'ionicons/icons';
+import { informationCircle, personCircle, receipt, speedometer } from 'ionicons/icons';
 
-/** Bottom navigation: Meter, History and Fare Info, like the proposal's prototype. */
+import { SettingsService } from '../../services/settings';
+
+/** Bottom navigation: Meter, History (drivers: Trips), Fare Info and Account, like the proposal's prototype. */
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
@@ -11,7 +13,10 @@ import { informationCircle, receipt, speedometer } from 'ionicons/icons';
   imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
 })
 export class TabsPage {
+  private settings = inject(SettingsService);
+  readonly historyLabel = computed(() => (this.settings.role() === 'driver' ? 'Trips' : 'History'));
+
   constructor() {
-    addIcons({ speedometer, receipt, informationCircle });
+    addIcons({ speedometer, receipt, informationCircle, personCircle });
   }
 }

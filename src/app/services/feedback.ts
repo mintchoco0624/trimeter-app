@@ -16,10 +16,11 @@ export class FeedbackService {
     await toast.present();
   }
 
-  async error(message: string): Promise<void> {
+  async error(message: string, header = 'Something went wrong'): Promise<void> {
     void this.haptic(() => Haptics.notification({ type: NotificationType.Error }));
-    const alert = await this.alertCtrl.create({ header: 'Something went wrong', message, buttons: ['OK'] });
+    const alert = await this.alertCtrl.create({ header, message, buttons: ['OK'] });
     await alert.present();
+    await alert.onDidDismiss();
   }
 
   /** Shows a Cancel / confirm dialog and resolves to true when the user confirms. */
@@ -35,6 +36,19 @@ export class FeedbackService {
     await alert.present();
     const { role } = await alert.onDidDismiss();
     return role === 'confirm' || role === 'destructive';
+  }
+
+  /**
+   * Explains why TriMeter needs location before Android shows its permission prompt.
+   * Resolves to false when the user chooses "Not now".
+   */
+  explainLocation(): Promise<boolean> {
+    return this.confirm(
+      'Allow location?',
+      'TriMeter uses GPS to measure how far the tricycle travels, so it can compute the fare. ' +
+        'Location is used only while a trip is running or when you tap "Locate me", and it stays on this phone.',
+      'Continue',
+    );
   }
 
   /** Light tap: the fare went up. */

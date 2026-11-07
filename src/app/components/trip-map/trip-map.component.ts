@@ -20,6 +20,8 @@ export const CABANATUAN: LatLng = { lat: 15.4866, lng: 120.9667 };
 export class TripMapComponent implements OnDestroy {
   /** Points of the route drawn as a line. */
   readonly route = input<LatLng[]>([]);
+  /** A planned road route (dashed), shown before the trip starts. */
+  readonly plan = input<LatLng[]>([]);
   /** The user's live position (pulsing dot). */
   readonly current = input<LatLng | null>(null);
   readonly from = input<LatLng | null>(null);
@@ -30,6 +32,8 @@ export class TripMapComponent implements OnDestroy {
   readonly fitRoute = input(false);
   /** Where the OpenStreetMap credit goes; move it when a panel covers the bottom of the map. */
   readonly attributionPosition = input<L.ControlPosition>('bottomright');
+  /** False when the page shows the OpenStreetMap credit itself (e.g. in a bottom panel that covers the map). */
+  readonly showAttribution = input(true);
   readonly mapClick = output<LatLng>();
 
   private readonly container = viewChild.required<ElementRef<HTMLDivElement>>('map');
@@ -37,6 +41,7 @@ export class TripMapComponent implements OnDestroy {
 
   private map?: L.Map;
   private line?: L.Polyline;
+  private planLine?: L.Polyline;
   private here?: L.Marker;
   private start?: L.Marker;
   private end?: L.Marker;
@@ -52,6 +57,20 @@ export class TripMapComponent implements OnDestroy {
       this.line!.setLatLngs(route.map((p) => [p.lat, p.lng]));
       if (this.fitRoute() && route.length > 1) {
         this.map.fitBounds(this.line!.getBounds(), { padding: [40, 40], maxZoom: 17 });
+      }
+    });
+
+    effect(() => {
+      if (!this.ready() || !this.map) return;
+      const plan = this.plan();
+      this.planLine!.setLatLngs(plan.map((p) => [p.lat, p.lng]));
+      // The plan is shown on the Meter, where a search card covers the top and the fare sheet the bottom.
+      if (plan.length > 1) {
+        this.map.fitBounds(this.planLine!.getBounds(), {
+          paddingTopLeft: [40, 150],
+          paddingBottomRight: [40, 330],
+          maxZoom: 16,
+        });
       }
     });
 
@@ -85,12 +104,15 @@ export class TripMapComponent implements OnDestroy {
       [CABANATUAN.lat, CABANATUAN.lng],
       14,
     );
-    L.control.attribution({ position: this.attributionPosition(), prefix: false }).addTo(this.map);
+    if (this.showAttribution()) {
+      L.control.attribution({ position: this.attributionPosition(), prefix: false }).addTo(this.map);
+    }
     L.tileLayer(environment.tileUrl, {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
 
+    this.planLine = L.polyline([], { color: '#24419B', weight: 5, opacity: 0.55, dashArray: '8 10' }).addTo(this.map);
     this.line = L.polyline([], { color: '#24419B', weight: 6, opacity: 0.9, lineCap: 'round' }).addTo(this.map);
     this.map.on('click', (e: L.LeafletMouseEvent) => this.mapClick.emit({ lat: e.latlng.lat, lng: e.latlng.lng }));
 

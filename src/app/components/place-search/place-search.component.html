@@ -1,0 +1,29 @@
+<ion-searchbar
+  class="search"
+  [placeholder]="placeholder()"
+  [value]="query()"
+  [debounce]="600"
+  searchIcon="search-outline"
+  (ionInput)="search($event.detail.value)"
+  (ionClear)="clear()"
+  data-testid="place-search"
+></ion-searchbar>
+
+@if (searching() || results().length > 0 || message()) {
+  <ion-list class="results" lines="full" aria-live="polite">
+    @if (searching()) {
+      <ion-item><ion-spinner name="dots"></ion-spinner><ion-label>Searching…</ion-label></ion-item>
+    } @else if (message()) {
+      <ion-item class="message">
+        <ion-icon slot="start" [name]="online() ? 'search-outline' : 'cloud-offline'" aria-hidden="true"></ion-icon>
+        <ion-label class="ion-text-wrap">{{ message() }}</ion-label>
+      </ion-item>
+    }
+    @for (p of results(); track p.lat + ',' + p.lng) {
+      <ion-item button (click)="pick(p)" data-testid="place-result">
+        <ion-icon slot="start" name="location-outline" aria-hidden="true"></ion-icon>
+        <ion-label class="ion-text-wrap">{{ p.label }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+}

@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, viewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonAccordion,
   IonAccordionGroup,
@@ -19,10 +20,12 @@ import {
   IonToolbar,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { call, cloudDownload, helpCircle, informationCircle, openOutline } from 'ionicons/icons';
+import { call, cloudDownload, cloudOffline, helpCircle, informationCircle, openOutline } from 'ionicons/icons';
 
+import { FareCalculatorComponent } from '../../components/fare-calculator/fare-calculator.component';
 import { PASSENGER_LABELS, type PassengerType } from '../../models/fare-matrix';
 import { PesoPipe } from '../../pipes/peso-pipe';
+import { ConnectivityService } from '../../services/connectivity';
 import { FareService } from '../../services/fare';
 import { FareMatrixService } from '../../services/fare-matrix';
 import { FeedbackService } from '../../services/feedback';
@@ -33,7 +36,43 @@ interface Faq {
   a: string;
 }
 
-/** The fare matrix in use, passenger type and gas price settings, plus help and FAQs. */
+/** Answers to the questions commuters and drivers ask most. Kept factual: no invented rules or contacts. */
+export const FAQS: Faq[] = [
+  {
+    q: 'How is the fare computed?',
+    a: 'The base fare covers the first 3 km. Every succeeding kilometre adds the per-km rate, and a part of a kilometre counts as a full kilometre (3.2 km is charged as 4 km). The rates come from the fare matrix shown above.',
+  },
+  {
+    q: 'How does GPS measure the distance?',
+    a: 'During a trip the phone reports its position about every 2 seconds. TriMeter adds up the distance between positions, but ignores positions that are too inaccurate (over 35 m), tiny movements while standing still (under 5 m) and impossible jumps (faster than 108 km/h).',
+  },
+  {
+    q: 'Why can the GPS distance differ from the driver’s estimate?',
+    a: 'Drivers often estimate by feel or by a usual route. GPS measures the road actually travelled, and phone GPS can drift a few metres near tall buildings or in bad weather. Small differences are normal; large ones are worth checking on the receipt map.',
+  },
+  {
+    q: 'What happens when GPS becomes unavailable?',
+    a: 'The Meter shows “GPS signal lost” and pauses the distance until the signal returns, so you are never charged for a jump. If GPS does not work at all, use Manual estimate: pick the start and end on the map to get the road distance and fare.',
+  },
+  {
+    q: 'Do I need mobile data?',
+    a: 'No for the meter: GPS distance and the fare work offline with the saved fare matrix. Mobile data is needed for the map pictures, place search and names, road distance in Manual mode, and checking for a newer fare matrix.',
+  },
+  {
+    q: 'How are discounts applied?',
+    a: 'Students, senior citizens and persons with disabilities (PWDs) pay the “discounted” column of the fare matrix. The passenger shows a valid ID to the driver. TriMeter does not check IDs; it only applies the rates in the matrix.',
+  },
+  {
+    q: 'How can I report a fare discrepancy?',
+    a: 'Open the trip receipt, type what the driver asked, and TriMeter shows the difference. Share or save the receipt, note the tricycle’s body number and TODA, and follow the steps under “Fare complaint assistance” below.',
+  },
+  {
+    q: 'How are my personal information and trips stored?',
+    a: 'Only on your phone, using the app’s local storage. There is no account or password and nothing is uploaded, except the start and end points sent to OpenStreetMap services to show place names, the map and road distance.',
+  },
+];
+
+/** Fare matrix, calculator, examples, source and verification status, help, complaints and about. */
 @Component({
   selector: 'app-fare-info',
   templateUrl: './fare-info.page.html',
@@ -55,6 +94,7 @@ interface Faq {
     IonSpinner,
     IonAccordionGroup,
     IonAccordion,
+    FareCalculatorComponent,
     PesoPipe,
     DatePipe,
   ],
@@ -64,13 +104,19 @@ export class FareInfoPage {
   private matrixService = inject(FareMatrixService);
   private settings = inject(SettingsService);
   private feedback = inject(FeedbackService);
+  private route = inject(ActivatedRoute);
+  private readonly content = viewChild(IonContent);
 
+  readonly online = inject(ConnectivityService).online;
   readonly matrix = this.matrixService.matrix;
   readonly source = this.matrixService.source;
   readonly loading = this.matrixService.loading;
   readonly passengerType = this.settings.passengerType;
+  readonly bandId = this.settings.fuelBandId;
+  readonly isDriver = computed(() => this.settings.role() === 'driver');
   readonly labels = PASSENGER_LABELS;
   readonly types: PassengerType[] = ['regular', 'student', 'senior', 'pwd'];
+  readonly faqs = FAQS;
 
   readonly band = computed(() => {
     const m = this.matrix();
@@ -89,31 +135,26 @@ export class FareInfoPage {
     }));
   });
 
-  readonly faqs: Faq[] = [
-    {
-      q: 'How is the fare computed?',
-      a: 'The base fare covers the first 3 km. Every succeeding kilometre adds the per-km rate, and a part of a kilometre counts as a full kilometre. Students, seniors and PWDs pay the discounted column.',
-    },
-    {
-      q: 'Why can the GPS distance differ a little from the driver’s estimate?',
-      a: 'GPS on phones is accurate to about 5–30 m. TriMeter ignores fixes that are too inaccurate, tiny jitters while stopped, and impossible jumps, so the distance follows the road you actually rode.',
-    },
-    {
-      q: 'Do I need mobile data?',
-      a: 'GPS works without data. Data is used for the map tiles, place names and checking for a newer fare matrix. Without data, the meter still counts distance and fare using the saved matrix.',
-    },
-    {
-      q: 'What if the driver asks for more?',
-      a: 'Open the trip receipt, type what the driver asked, and TriMeter shows how much you were overcharged. You can share the receipt and call the city hotline.',
-    },
-    {
-      q: 'Where is my data stored?',
-      a: 'Only on your phone. TriMeter has no account and does not upload your trips.',
-    },
-  ];
+  readonly sourceLabel = computed(() => {
+    switch (this.source()) {
+      case 'remote':
+        return 'online (GitHub)';
+      case 'cache':
+        return 'saved copy on this phone';
+      default:
+        return 'built-in copy';
+    }
+  });
 
   constructor() {
-    addIcons({ cloudDownload, helpCircle, informationCircle, call, openOutline });
+    addIcons({ cloudDownload, cloudOffline, helpCircle, informationCircle, call, openOutline });
+  }
+
+  /** Opened from Account with #faq or #complaint: scroll to that section. */
+  async ionViewDidEnter(): Promise<void> {
+    const id = this.route.snapshot.fragment;
+    const el = id ? document.getElementById(id) : null;
+    if (el) await this.content()?.scrollToPoint(0, el.offsetTop - 8, 400);
   }
 
   async setType(value: string | number | undefined): Promise<void> {
@@ -128,6 +169,10 @@ export class FareInfoPage {
   }
 
   checkUpdates(): void {
+    if (!this.online()) {
+      void this.feedback.toast('You are offline. Using the saved fare matrix.', 'warning');
+      return;
+    }
     this.matrixService.refresh();
     void this.feedback.toast('Checking for the latest fare matrix…');
   }

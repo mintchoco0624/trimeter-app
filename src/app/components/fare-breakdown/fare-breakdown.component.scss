@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--tm-line);
+  font-size: 14px;
+}
+.row span:last-child {
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.row small {
+  font-weight: 500;
+  color: var(--tm-muted);
+}
+
+.row--meta {
+  color: var(--tm-muted);
+}
+.row--subtotal {
+  font-weight: 700;
+}
+.row--discount {
+  color: var(--ion-color-success-shade);
+}
+.row--total {
+  border-bottom: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tm-navy);
+}
+.row--total span:last-child {
+  font-weight: 800;
+}
+
+.note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--tm-muted);
+}

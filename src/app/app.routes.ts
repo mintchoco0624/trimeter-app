@@ -24,6 +24,10 @@ export const routes: Routes = [
         path: 'fare-info',
         loadComponent: () => import('./pages/fare-info/fare-info.page').then((m) => m.FareInfoPage),
       },
+      {
+        path: 'account',
+        loadComponent: () => import('./pages/account/account.page').then((m) => m.AccountPage),
+      },
       { path: '', redirectTo: '/tabs/meter', pathMatch: 'full' },
     ],
   },

@@ -1,0 +1,23 @@
+@let b = breakdown();
+<div class="breakdown" role="table" aria-label="Fare breakdown">
+  @if (showDistance()) {
+    <div class="row row--meta" role="row">
+      <span role="cell">Distance travelled</span>
+      <span role="cell"
+        >{{ b.distanceKm | number: '1.2-2' }} km <small>(charged as {{ chargedKm() }} km)</small></span
+      >
+    </div>
+  }
+  @for (r of rows(); track r.label) {
+    <div [class]="'row row--' + r.kind" role="row">
+      <span role="cell">{{ r.label }}</span>
+      <span role="cell">{{ r.amount < 0 ? '−' : '' }}{{ (r.amount < 0 ? -r.amount : r.amount) | peso }}</span>
+    </div>
+  }
+  <p class="note">
+    A part of a kilometre counts as a full kilometre. Gas price band: {{ b.bandLabel }}.
+    @if (b.discounted) {
+      Show a valid ID to get the discounted fare.
+    }
+  </p>
+</div>

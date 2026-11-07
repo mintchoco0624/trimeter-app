@@ -1,25 +1,38 @@
 {
-  "version": "2026.11-sample",
+  "version": "2026.11-sample-2",
   "city": "Cabanatuan City, Nueva Ecija",
   "ordinance": "City Ordinance No. 050-2026 (tricycle fare matrix)",
+  "ordinanceNo": "050-2026",
+  "effectiveDate": null,
+  "effectiveNote": "Not confirmed. A Rappler fact check (April 2026) reported that this fare matrix was still a draft and not yet in force, and that the last official tricycle fare adjustment was in November 2018.",
   "status": "unconfirmed",
-  "statusNote": "Figures taken from the community-compiled BetterCabanatuan fare data for Ordinance No. 050-2026. They have not yet been verified against the city's certified copy. Verify with the City Tricycle Franchising and Regulatory Board before relying on them.",
-  "updatedAt": "2026-11-06",
+  "statusNote": "Figures taken from the community-compiled BetterCabanatuan fare data for Ordinance No. 050-2026. They have not been verified against the city’s certified copy, and the ordinance may not be in force yet. Verify with the Cabanatuan City Government before relying on them.",
+  "updatedAt": "2026-11-07",
   "baseKm": 3,
-  "discountedTypes": ["student", "senior", "pwd"],
+  "discountedTypes": [
+    "student",
+    "senior",
+    "pwd"
+  ],
   "defaultBandId": "b50",
   "fuelBands": [
-    { "id": "b50",  "label": "₱50.00 – ₱59.99 / L (base)", "minPrice": 50,  "maxPrice": 59.99,  "baseFare": { "regular": 35,   "discounted": 28 }, "perSucceedingKm": { "regular": 5,   "discounted": 4 } },
-    { "id": "b60",  "label": "₱60.00 – ₱69.99 / L",        "minPrice": 60,  "maxPrice": 69.99,  "baseFare": { "regular": 37.5, "discounted": 30 }, "perSucceedingKm": { "regular": 5.5, "discounted": 4.5 } },
-    { "id": "b70",  "label": "₱70.00 – ₱79.99 / L",        "minPrice": 70,  "maxPrice": 79.99,  "baseFare": { "regular": 40,   "discounted": 32 }, "perSucceedingKm": { "regular": 6,   "discounted": 5 } },
-    { "id": "b80",  "label": "₱80.00 – ₱89.99 / L",        "minPrice": 80,  "maxPrice": 89.99,  "baseFare": { "regular": 42.5, "discounted": 34 }, "perSucceedingKm": { "regular": 6.5, "discounted": 5 } },
-    { "id": "b90",  "label": "₱90.00 – ₱99.99 / L",        "minPrice": 90,  "maxPrice": 99.99,  "baseFare": { "regular": 45,   "discounted": 36 }, "perSucceedingKm": { "regular": 7,   "discounted": 5.5 } },
-    { "id": "b100", "label": "₱100.00 – ₱109.99 / L",      "minPrice": 100, "maxPrice": 109.99, "baseFare": { "regular": 47.5, "discounted": 38 }, "perSucceedingKm": { "regular": 7.5, "discounted": 6 } },
-    { "id": "b110", "label": "₱110.00 – ₱119.99 / L",      "minPrice": 110, "maxPrice": 119.99, "baseFare": { "regular": 50,   "discounted": 40 }, "perSucceedingKm": { "regular": 8,   "discounted": 6.5 } }
+    { "id": "b50", "label": "₱50.00 – ₱59.99 / L (base)", "minPrice": 50, "maxPrice": 59.99, "baseFare": {"regular": 35, "discounted": 28}, "perSucceedingKm": {"regular": 5, "discounted": 4} },
+    { "id": "b60", "label": "₱60.00 – ₱69.99 / L", "minPrice": 60, "maxPrice": 69.99, "baseFare": {"regular": 37.5, "discounted": 30}, "perSucceedingKm": {"regular": 5.5, "discounted": 4.5} },
+    { "id": "b70", "label": "₱70.00 – ₱79.99 / L", "minPrice": 70, "maxPrice": 79.99, "baseFare": {"regular": 40, "discounted": 32}, "perSucceedingKm": {"regular": 6, "discounted": 5} },
+    { "id": "b80", "label": "₱80.00 – ₱89.99 / L", "minPrice": 80, "maxPrice": 89.99, "baseFare": {"regular": 42.5, "discounted": 34}, "perSucceedingKm": {"regular": 6.5, "discounted": 5} },
+    { "id": "b90", "label": "₱90.00 – ₱99.99 / L", "minPrice": 90, "maxPrice": 99.99, "baseFare": {"regular": 45, "discounted": 36}, "perSucceedingKm": {"regular": 7, "discounted": 5.5} },
+    { "id": "b100", "label": "₱100.00 – ₱109.99 / L", "minPrice": 100, "maxPrice": 109.99, "baseFare": {"regular": 47.5, "discounted": 38}, "perSucceedingKm": {"regular": 7.5, "discounted": 6} },
+    { "id": "b110", "label": "₱110.00 – ₱119.99 / L", "minPrice": 110, "maxPrice": 119.99, "baseFare": {"regular": 50, "discounted": 40}, "perSucceedingKm": {"regular": 8, "discounted": 6.5} }
   ],
-  "hotline": "0998-500-2726",
+  "hotline": "",
   "sources": [
-    { "label": "BetterCabanatuan fare data (community-compiled, unconfirmed)", "url": "https://github.com/BetterCabanatuan/bettercabanatuan-fare" },
-    { "label": "Rappler fact check on the new Cabanatuan fare matrix", "url": "https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/" }
+    {
+      "label": "BetterCabanatuan fare data (community-compiled, unconfirmed)",
+      "url": "https://github.com/BetterCabanatuan/bettercabanatuan-fare"
+    },
+    {
+      "label": "Rappler fact check on the new Cabanatuan fare matrix",
+      "url": "https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/"
+    }
   ]
 }

@@ -9,6 +9,9 @@ const MATRIX: FareMatrix = {
   version: 'test',
   city: 'Cabanatuan City',
   ordinance: 'Test',
+  ordinanceNo: '050-2026',
+  effectiveDate: null,
+  effectiveNote: 'Not confirmed',
   status: 'unconfirmed',
   statusNote: '',
   updatedAt: '2026-11-06',
@@ -93,5 +96,14 @@ describe('FareService', () => {
   it('computes the overcharge amount and percentage', () => {
     expect(service.overcharge(40, 60)).toEqual({ amount: 20, percent: 50 });
     expect(service.overcharge(40, 35)).toEqual({ amount: 0, percent: 0 });
+  });
+
+  it('stores the regular rates and the discount amount for the receipt', () => {
+    const b = service.compute(4.56, 'senior', MATRIX);
+    expect(b.regularBaseFare).toBe(35);
+    expect(b.regularSucceedingRate).toBe(5);
+    expect(b.regularTotal).toBe(45);
+    expect(b.savings).toBe(9);
+    expect(service.compute(4.56, 'regular', MATRIX).savings).toBe(0);
   });
 });

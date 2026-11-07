@@ -10,6 +10,18 @@ export const MAX_ACCURACY_M = 35;
 export const MIN_STEP_M = 5;
 /** Anything faster than this (m/s, about 108 km/h) is a GPS jump, not a tricycle. */
 export const MAX_SPEED_MS = 30;
+/** A metered trip shorter than this (50 m) has no real distance, so it is not saved as a paid trip. */
+export const MIN_TRIP_KM = 0.05;
+
+export type GpsQuality = 'none' | 'strong' | 'fair' | 'weak';
+
+/** Signal quality from the accuracy radius in metres (smaller is better). */
+export function gpsQuality(accuracyM: number | null | undefined): GpsQuality {
+  if (accuracyM === null || accuracyM === undefined) return 'none';
+  if (accuracyM <= 15) return 'strong';
+  if (accuracyM <= MAX_ACCURACY_M) return 'fair';
+  return 'weak';
+}
 
 export type FixDecision = { accept: true; stepM: number } | { accept: false; reason: 'inaccurate' | 'jitter' | 'jump' };
 

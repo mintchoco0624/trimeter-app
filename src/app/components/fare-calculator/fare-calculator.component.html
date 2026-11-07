@@ -1,0 +1,33 @@
+<ion-input
+  type="text"
+  inputmode="decimal"
+  label="Distance (km)"
+  labelPlacement="floating"
+  fill="outline"
+  placeholder="e.g. 4.5"
+  [value]="raw()"
+  [class.ion-invalid]="!!error()"
+  [class.ion-touched]="touched()"
+  [errorText]="error()"
+  helperText="Use the distance from the Meter or a map."
+  (ionInput)="onInput($event.detail.value)"
+  data-testid="calc-km"
+></ion-input>
+
+<ion-segment class="types" [value]="type()" (ionChange)="setType($event.detail.value)" aria-label="Passenger type">
+  @for (t of types; track t) {
+    <ion-segment-button [value]="t">
+      <ion-label>{{ t === 'senior' ? 'Senior' : labels[t] }}</ion-label>
+    </ion-segment-button>
+  }
+</ion-segment>
+
+@if (breakdown(); as b) {
+  <div class="result" data-testid="calc-result">
+    <span class="tm-label">Estimated fare · {{ labels[b.passengerType] }}</span>
+    <span class="total tm-peso" data-testid="calc-total">{{ b.total | peso }}</span>
+    <app-fare-breakdown [breakdown]="b"></app-fare-breakdown>
+  </div>
+} @else if (!touched()) {
+  <p class="hint">Type a distance to see the fare and how it is computed.</p>
+}

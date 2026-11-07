@@ -63,7 +63,7 @@ h2 {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   border-top: 1px solid #eceef5;
   padding-top: 10px;
@@ -72,23 +72,6 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px dashed #e1e4ee;
-  font-size: 14px;
-}
-.discount {
-  color: var(--ion-color-success);
-}
-.total-row {
-  font-weight: 800;
-  font-size: 17px;
-  border-bottom: 0;
 }
 
 .verdict {
@@ -124,4 +107,38 @@ h2 {
 .empty {
   text-align: center;
   padding: 80px 24px;
+}
+
+.body--no-map {
+  margin-top: 0;
+  padding-top: 16px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e7f6ee;
+  color: #13663a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.status-badge--estimate {
+  background: var(--tm-cream);
+  color: #8a5a20;
+}
+
+.planned {
+  margin: 0 0 10px 38px;
+}
+
+.estimate-note {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--tm-cream);
+  color: var(--tm-navy-deep);
+  font-size: 13px;
 }

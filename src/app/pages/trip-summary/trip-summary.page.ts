@@ -17,13 +17,13 @@ import {
 import { addIcons } from 'ionicons';
 import { alertCircle, checkmarkCircle, shareSocial, trash } from 'ionicons/icons';
 
+import { FareBreakdownComponent } from '../../components/fare-breakdown/fare-breakdown.component';
 import { TripMapComponent } from '../../components/trip-map/trip-map.component';
 import { PASSENGER_LABELS } from '../../models/fare-matrix';
-import type { Trip } from '../../models/trip';
+import { STATUS_LABELS, type Trip, tripStatus } from '../../models/trip';
 import { DurationPipe, formatDuration } from '../../pipes/duration-pipe';
 import { PesoPipe, formatPeso } from '../../pipes/peso-pipe';
 import { FareService } from '../../services/fare';
-import { FareMatrixService } from '../../services/fare-matrix';
 import { FeedbackService } from '../../services/feedback';
 import { TripStorageService } from '../../services/trip-storage';
 
@@ -45,6 +45,7 @@ import { TripStorageService } from '../../services/trip-storage';
     FormsModule,
     RouterLink,
     TripMapComponent,
+    FareBreakdownComponent,
     PesoPipe,
     DurationPipe,
     DatePipe,
@@ -56,14 +57,20 @@ export class TripSummaryPage {
   private fareService = inject(FareService);
   private feedback = inject(FeedbackService);
   private router = inject(Router);
-  private matrixService = inject(FareMatrixService);
-  readonly hotline = computed(() => this.matrixService.matrix()?.hotline ?? '');
 
   /** From the route /trip/:id (withComponentInputBinding). */
   readonly id = input.required<string>();
   readonly trip = signal<Trip | null>(null);
   readonly notFound = signal(false);
   readonly labels = PASSENGER_LABELS;
+  readonly statusLabels = STATUS_LABELS;
+  readonly status = computed(() => {
+    const t = this.trip();
+    return t ? tripStatus(t) : null;
+  });
+  /** The overcharge check is for passengers; driver records do not show it. */
+  readonly showCheck = computed(() => this.trip()?.role !== 'driver');
+  readonly hasRoute = computed(() => (this.trip()?.route.length ?? 0) > 1);
 
   /** What the driver asked, typed by the passenger. */
   asked: number | null = null;
@@ -114,7 +121,11 @@ export class TripSummaryPage {
       `Distance: ${t.distanceKm.toFixed(2)} km (${t.distanceSource})`,
       `Time: ${formatDuration(t.durationSec)}`,
       `Passenger: ${this.labels[t.passengerType]}`,
+      t.fare.discounted
+        ? `Regular fare: ${formatPeso(t.fare.regularTotal)}, discount −${formatPeso(t.fare.savings)}`
+        : '',
       `Fair fare: ${formatPeso(t.fare.total)}`,
+      `Fare data version: ${t.matrixVersion}`,
       t.driverAsked ? `Driver asked: ${formatPeso(t.driverAsked)}` : '',
     ]
       .filter(Boolean)

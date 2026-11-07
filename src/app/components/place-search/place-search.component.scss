@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.search {
+  --background: #fff;
+  --border-radius: 14px;
+  --box-shadow: var(--tm-shadow);
+  --placeholder-color: var(--tm-muted);
+  --placeholder-opacity: 1;
+  padding: 0;
+  min-height: 48px;
+}
+
+.results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 46vh;
+  overflow-y: auto;
+  border-radius: 14px;
+  box-shadow: var(--tm-shadow);
+  padding: 0;
+}
+.results ion-item {
+  --min-height: 48px;
+  font-size: 14px;
+}
+.results ion-icon {
+  color: var(--tm-navy);
+  margin-inline-end: 12px;
+}
+.message {
+  color: var(--tm-muted);
+}

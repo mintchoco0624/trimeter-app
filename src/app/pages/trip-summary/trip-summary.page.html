@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content class="summary">
-  @if (trip(); as t) {
+  @if (trip(); as t) { @if (hasRoute()) {
   <div class="map-box">
     <app-trip-map
       [route]="t.route"
@@ -23,9 +23,13 @@
       attributionPosition="topright"
     ></app-trip-map>
   </div>
+  }
 
-  <div class="body">
+  <div class="body" [class.body--no-map]="!hasRoute()">
     <section class="tm-card total-card">
+      <span class="status-badge" [class.status-badge--estimate]="status() === 'estimate'" data-testid="receipt-status"
+        >{{ statusLabels[status()!] }}</span
+      >
       <span class="tm-label">{{ t.mode === 'auto' ? 'Fair fare (GPS meter)' : 'Estimated fare (manual)' }}</span>
       <span class="total tm-peso" data-testid="receipt-total">{{ t.fare.total | peso }}</span>
       <span class="tm-muted small">{{ t.startedAt | date: 'MMM d, y · h:mm a' }} · {{ labels[t.passengerType] }}</span>
@@ -46,34 +50,29 @@
           <p>{{ t.to.label }}</p>
         </div>
       </div>
+      @if (t.destination && t.destination.label !== t.to.label) {
+      <p class="tm-muted small planned">Destination set before the ride: {{ t.destination.label }}</p>
+      }
       <div class="stats">
         <div><span class="tm-label">Distance</span><strong>{{ t.distanceKm | number: '1.2-2' }} km</strong></div>
         <div><span class="tm-label">Time</span><strong>{{ t.durationSec | duration }}</strong></div>
+        <div><span class="tm-label">Passenger</span><strong>{{ labels[t.passengerType] }}</strong></div>
         <div><span class="tm-label">Measured by</span><strong>{{ t.distanceSource }}</strong></div>
       </div>
     </section>
 
-    <section class="tm-card breakdown" aria-label="Fare breakdown">
+    <section class="tm-card" aria-label="Fare breakdown">
       <h2>Fare breakdown</h2>
-      <div class="row">
-        <span>Base fare (first {{ t.fare.baseKm }} km)</span><span>{{ t.fare.baseFare | peso }}</span>
-      </div>
-      <div class="row">
-        <span>Succeeding km: {{ t.fare.succeedingKm }} × {{ t.fare.succeedingRate | peso }}</span>
-        <span>{{ t.fare.succeedingFare | peso }}</span>
-      </div>
-      @if (t.fare.discounted) {
-      <div class="row discount">
-        <span>{{ labels[t.passengerType] }} discount (vs. regular {{ t.fare.regularTotal | peso }})</span>
-        <span>−{{ t.fare.savings | peso }}</span>
-      </div>
-      }
-      <div class="row total-row"><span>Total</span><span>{{ t.fare.total | peso }}</span></div>
-      <p class="tm-muted small">
-        A part of a kilometre counts as a full kilometre. Gas price band: {{ t.fare.bandLabel }}.
+      <app-fare-breakdown [breakdown]="t.fare" [showDistance]="false"></app-fare-breakdown>
+      @if (t.estimate) {
+      <p class="estimate-note">
+        Estimate before the ride: {{ t.estimate.fare | peso }} for {{ t.estimate.distanceKm | number: '1.1-1' }} km {{
+        t.estimate.kind === 'road' ? 'by road' : '(straight line ×1.3)' }}.
       </p>
+      }
     </section>
 
+    @if (showCheck()) {
     <section class="tm-card check" aria-label="Overcharge check">
       <h2>Did the driver ask for more?</h2>
       <ion-input
@@ -93,18 +92,22 @@
         <ion-icon name="alert-circle"></ion-icon>
         <div>
           <strong>Overcharged by {{ c.amount | peso }} ({{ c.percent }}%).</strong>
-          <p>You can show this receipt to the driver. Complaints hotline: {{ hotline() }}.</p>
+          <p>
+            Show this receipt to the driver. To report it, see
+            <a [routerLink]="['/tabs/fare-info']" fragment="complaint">Fare complaint assistance</a>.
+          </p>
         </div>
       </div>
       } @else {
       <div class="verdict verdict--ok">
         <ion-icon name="checkmark-circle"></ion-icon>
-        <div><strong>Fair fare.</strong> The amount is within the city fare matrix.</div>
+        <div><strong>Fair fare.</strong> The amount is within the fare matrix.</div>
       </div>
       }
       <ion-button fill="outline" size="small" (click)="saveAsked()">Save to trip</ion-button>
       }
     </section>
+    }
 
     <div class="actions">
       <ion-button expand="block" shape="round" (click)="share()"

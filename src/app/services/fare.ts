@@ -38,6 +38,8 @@ export class FareService {
       succeedingFare,
       total,
       regularTotal,
+      regularBaseFare: band.baseFare.regular,
+      regularSucceedingRate: band.perSucceedingKm.regular,
       savings: regularTotal - total,
       passengerType,
       discounted,

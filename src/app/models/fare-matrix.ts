@@ -27,7 +27,13 @@ export interface FareMatrix {
   version: string;
   city: string;
   ordinance: string;
-  /** "unconfirmed" until the group verifies the figures with the City TFRB. */
+  /** e.g. "050-2026". */
+  ordinanceNo: string;
+  /** ISO date the fares took effect, or null while it is not confirmed. Never guessed. */
+  effectiveDate: string | null;
+  /** Why the effective date is missing, shown next to "Not confirmed". */
+  effectiveNote: string;
+  /** "unconfirmed" until the group verifies the figures with the city's certified copy. */
   status: 'confirmed' | 'unconfirmed';
   statusNote: string;
   updatedAt: string;
@@ -37,7 +43,8 @@ export interface FareMatrix {
   /** Id of the band used when the user has not picked one. */
   defaultBandId: string;
   fuelBands: FuelBand[];
-  hotline: string;
+  /** A complaint hotline, shown only when it has been verified. Empty = not shown. */
+  hotline?: string;
   sources: FareSource[];
 }
 
@@ -52,6 +59,10 @@ export interface FareBreakdown {
   total: number;
   /** What a regular passenger would pay for the same distance. */
   regularTotal: number;
+  /** Regular-column rates, so a receipt can show "regular fare, minus discount". Missing on older trips. */
+  regularBaseFare?: number;
+  regularSucceedingRate?: number;
+  /** Discount = regularTotal - total (0 for regular passengers). */
   savings: number;
   passengerType: PassengerType;
   discounted: boolean;

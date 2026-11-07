@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar class="tm-brand">
+    <ion-title>Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="account">
+  <div class="body">
+    <section class="tm-card profile" aria-label="Profile">
+      <div class="avatar" aria-hidden="true">{{ initial() }}</div>
+      <div class="who">
+        <strong class="name">{{ displayName() || 'Add your name' }}</strong>
+        <span class="role-chip" data-testid="account-role">
+          <ion-icon [name]="role() === 'driver' ? 'car' : 'walk'" aria-hidden="true"></ion-icon>
+          {{ roleLabels[role()] }}
+        </span>
+      </div>
+      <ion-button fill="clear" size="small" (click)="editName()" aria-label="Edit name">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </section>
+
+    <h2 class="section">Account settings</h2>
+    <ion-list class="tm-list" lines="full">
+      <ion-item button (click)="switchRole()" data-testid="switch-role">
+        <ion-icon slot="start" name="swap-horizontal" aria-hidden="true"></ion-icon>
+        <ion-label>
+          <h3>App role</h3>
+          <p>{{ roleLabels[role()] }} · tap to switch</p>
+        </ion-label>
+      </ion-item>
+      @if (role() === 'commuter') {
+      <ion-item button routerLink="/tabs/fare-info" detail="true">
+        <ion-icon slot="start" name="pricetag" aria-hidden="true"></ion-icon>
+        <ion-label>
+          <h3>Passenger type</h3>
+          <p>{{ passengerLabels[passengerType()] }} · change in Fare Info</p>
+        </ion-label>
+      </ion-item>
+      }
+      <ion-item lines="none">
+        <ion-icon slot="start" name="location" aria-hidden="true"></ion-icon>
+        <ion-label>
+          <h3>Location access</h3>
+          <p>
+            @if (locationAllowed() === true) { Allowed. Used only during a trip or when you tap “Locate me”. } @else {
+            Not allowed yet. TriMeter asks when you start your first trip. }
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <h2 class="section">Discount verification</h2>
+    <section class="tm-card info">
+      <div class="info-row">
+        <ion-icon name="id-card" aria-hidden="true"></ion-icon>
+        <p>
+          Students, senior citizens and PWDs pay the discounted fare. @if (role() === 'driver') { Ask the passenger for
+          a valid school, senior citizen or PWD ID before choosing a discounted fare. } @else { Show a valid school,
+          senior citizen or PWD ID to the driver. }
+        </p>
+      </div>
+      <p class="tm-muted small">
+        TriMeter does not check or store IDs. Discounts follow the fare matrix shown in Fare Info, which is not yet
+        officially verified.
+      </p>
+    </section>
+
+    <h2 class="section">Privacy</h2>
+    <section class="tm-card info">
+      <ul class="privacy">
+        <li>
+          <ion-icon name="lock-closed" aria-hidden="true"></ion-icon>No account or password. Your profile and trips are
+          saved only on this phone.
+        </li>
+        <li>
+          <ion-icon name="location" aria-hidden="true"></ion-icon>GPS runs only between Start Trip and End Trip, or when
+          you tap “Locate me”.
+        </li>
+        <li>
+          <ion-icon name="chatbubbles" aria-hidden="true"></ion-icon>To show place names, map and road distance, the
+          start and end points are sent to OpenStreetMap services. Nothing else is uploaded.
+        </li>
+      </ul>
+    </section>
+
+    <h2 class="section">Help and support</h2>
+    <ion-list class="tm-list" lines="full">
+      <ion-item button [routerLink]="['/tabs/fare-info']" fragment="faq" detail="true">
+        <ion-icon slot="start" name="help-circle" aria-hidden="true"></ion-icon>
+        <ion-label>Help &amp; FAQs</ion-label>
+      </ion-item>
+      <ion-item button [routerLink]="['/tabs/fare-info']" fragment="complaint" detail="true" lines="none">
+        <ion-icon slot="start" name="chatbubbles" aria-hidden="true"></ion-icon>
+        <ion-label>Report a fare problem</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <h2 class="section">Data</h2>
+    <ion-list class="tm-list" lines="full">
+      <ion-item button (click)="deleteTrips()">
+        <ion-icon slot="start" name="trash" color="danger" aria-hidden="true"></ion-icon>
+        <ion-label color="danger">Delete all trips</ion-label>
+        <ion-note slot="end">{{ tripCount() }}</ion-note>
+      </ion-item>
+      <ion-item button (click)="logout()" lines="none" data-testid="logout">
+        <ion-icon slot="start" name="log-out" aria-hidden="true"></ion-icon>
+        <ion-label>Log out</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <p class="version tm-muted">TriMeter 1.1 · BSIT-4C Mobile Application Technology</p>
+  </div>
+</ion-content>

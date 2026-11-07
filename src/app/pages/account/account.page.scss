@@ -1,0 +1,124 @@
+.body {
+  padding: 16px 16px 28px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tm-pink);
+  color: var(--tm-navy-deep);
+  font-size: 24px;
+  font-weight: 800;
+}
+.who {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.name {
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e5eafa;
+  color: var(--tm-navy);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.section {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tm-muted);
+  margin: 22px 4px 8px;
+}
+
+.tm-list {
+  border-radius: var(--tm-radius);
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(27, 42, 92, 0.08);
+  padding: 0;
+}
+.tm-list ion-item {
+  --min-height: 56px;
+}
+.tm-list ion-icon[slot='start'] {
+  color: var(--tm-navy);
+  margin-inline-end: 16px;
+}
+.tm-list h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+.tm-list p {
+  font-size: 13px;
+  white-space: normal;
+}
+
+.info p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.info-row {
+  display: flex;
+  gap: 12px;
+}
+.info-row ion-icon {
+  flex: none;
+  font-size: 24px;
+  color: var(--tm-navy);
+}
+.small {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+}
+
+.privacy {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.privacy li {
+  display: flex;
+  gap: 12px;
+}
+.privacy ion-icon {
+  flex: none;
+  font-size: 20px;
+  color: var(--tm-navy);
+  margin-top: 1px;
+}
+
+.version {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 24px;
+}

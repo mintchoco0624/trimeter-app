@@ -5,14 +5,6 @@
     </ion-buttons>
     <ion-title>Manual estimate</ion-title>
   </ion-toolbar>
-  <ion-toolbar class="search-bar">
-    <ion-searchbar
-      placeholder="Search a place in Cabanatuan"
-      [debounce]="600"
-      (ionInput)="search($event.detail.value)"
-      data-testid="search"
-    ></ion-searchbar>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content [scrollY]="false" class="estimate">
@@ -22,21 +14,16 @@
     [from]="from()"
     [to]="to()"
     [fitRoute]="true"
-    attributionPosition="topright"
+    [showAttribution]="false"
     (mapClick)="onMapClick($event)"
   ></app-trip-map>
 
-  @if (searching() || searchResults().length > 0) {
-  <ion-list class="results" lines="full">
-    @if (searching()) {
-    <ion-item><ion-spinner name="dots"></ion-spinner></ion-item>
-    } @for (p of searchResults(); track p.lat + ',' + p.lng) {
-    <ion-item button (click)="pickResult(p)">
-      <ion-label class="ion-text-wrap">{{ p.label }}</ion-label>
-    </ion-item>
-    }
-  </ion-list>
-  }
+  <div class="top">
+    <app-place-search
+      [placeholder]="from() ? 'Search drop-off (B)' : 'Search pick-up (A)'"
+      (picked)="pickResult($event)"
+    ></app-place-search>
+  </div>
 
   <section class="sheet">
     <div class="points">
@@ -83,5 +70,6 @@
       <ion-icon slot="start" name="save"></ion-icon> Save to history
     </ion-button>
     }
+    <p class="osm">Map © OpenStreetMap contributors</p>
   </section>
 </ion-content>

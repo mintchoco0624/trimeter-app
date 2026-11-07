@@ -6,7 +6,15 @@
 
 <ion-content class="fare-info">
   <div class="body">
-    <section class="tm-card">
+    <!-- 1. Passenger discount -->
+    <section class="tm-card" id="passenger">
+      @if (isDriver()) {
+      <h2>Passenger discounts</h2>
+      <p class="tm-muted small first">
+        Students, senior citizens and PWDs pay the discounted fare after showing a valid ID. Choose the passenger type
+        on the Meter before each trip.
+      </p>
+      } @else {
       <h2>Who is riding?</h2>
       <ion-segment [value]="passengerType()" (ionChange)="setType($event.detail.value)" data-testid="passenger-segment">
         @for (t of types; track t) {
@@ -18,22 +26,43 @@
       <p class="tm-muted small">
         Discounted fares apply to students, senior citizens and PWDs. Show a valid ID to the driver.
       </p>
+      }
     </section>
 
     @if (matrix(); as m) {
-    <section class="tm-card">
+    <!-- 2. Current fare matrix -->
+    <section class="tm-card" id="matrix">
       <div class="title-row">
         <h2>Current fare matrix</h2>
-        <ion-badge [color]="m.status === 'confirmed' ? 'success' : 'warning'">
+        <ion-badge [color]="m.status === 'confirmed' ? 'success' : 'warning'" data-testid="matrix-status">
           {{ m.status === 'confirmed' ? 'Confirmed' : 'Unconfirmed' }}
         </ion-badge>
       </div>
-      <p class="ordinance">{{ m.ordinance }}</p>
-      <p class="tm-muted small">
-        {{ m.city }} · version {{ m.version }} · updated {{ m.updatedAt | date: 'MMM d, y' }}
-      </p>
 
-      @if (band(); as b) {
+      <dl class="facts">
+        <div>
+          <dt>Ordinance</dt>
+          <dd>{{ m.ordinance }}</dd>
+        </div>
+        <div>
+          <dt>Ordinance no.</dt>
+          <dd>{{ m.ordinanceNo || 'Not stated' }}</dd>
+        </div>
+        <div>
+          <dt>Effective date</dt>
+          <dd data-testid="effective-date">
+            @if (m.effectiveDate) { {{ m.effectiveDate | date: 'MMMM d, y' }} } @else {
+            <span class="not-confirmed">Not confirmed</span> }
+          </dd>
+        </div>
+        <div>
+          <dt>Fare source</dt>
+          <dd>{{ m.sources[0]?.label ?? 'Not stated' }}</dd>
+        </div>
+      </dl>
+      @if (!m.effectiveDate && m.effectiveNote) {
+      <p class="tm-muted small">{{ m.effectiveNote }}</p>
+      } @if (band(); as b) {
       <table class="matrix" aria-label="Fare rates">
         <thead>
           <tr>
@@ -71,38 +100,24 @@
         </ion-select>
       </ion-item>
       <p class="tm-muted small">
-        The city raises fares in steps when the pump price of gasoline goes up. Pick the band that matches today’s
-        price.
+        The fare data has steps for gasoline pump prices. Pick the band that matches today’s price; the first band is
+        the base fare.
       </p>
-
-      @if (m.status !== 'confirmed') {
-      <p class="warn">{{ m.statusNote }}</p>
-      }
-
-      <div class="source-row">
-        <span class="tm-muted small">
-          Loaded from:
-          <strong
-            >{{ source() === 'remote' ? 'online (GitHub)' : source() === 'cache' ? 'saved copy' : 'built-in copy'
-            }}</strong
-          >
-        </span>
-        <ion-button
-          size="small"
-          fill="outline"
-          (click)="checkUpdates()"
-          [disabled]="loading()"
-          data-testid="check-updates"
-        >
-          @if (loading()) {
-          <ion-spinner name="dots"></ion-spinner>
-          } @else {
-          <ion-icon slot="start" name="cloud-download"></ion-icon> Check for updates }
-        </ion-button>
-      </div>
     </section>
 
-    <section class="tm-card">
+    <!-- 3. Fare calculator -->
+    <section class="tm-card" id="calculator">
+      <h2>Fare calculator</h2>
+      <p class="tm-muted small first">Check a fare before or after a ride.</p>
+      <app-fare-calculator
+        [matrix]="m"
+        [bandId]="bandId()"
+        [initialType]="isDriver() ? 'regular' : passengerType()"
+      ></app-fare-calculator>
+    </section>
+
+    <!-- 4. Example fares -->
+    <section class="tm-card" id="examples">
       <h2>Example fares</h2>
       <table class="matrix examples">
         <thead>
@@ -124,36 +139,80 @@
       </table>
     </section>
 
-    <section class="tm-card">
+    <!-- 5. Fare source and verification status -->
+    <section class="tm-card" id="source">
+      <h2>Fare source and verification</h2>
+      @if (m.status !== 'confirmed') {
+      <p class="warn">{{ m.statusNote }}</p>
+      }
+      <ul class="sources">
+        @for (s of m.sources; track s.url) {
+        <li><a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a></li>
+        }
+      </ul>
+      <p class="tm-muted small">
+        Version {{ m.version }} · updated {{ m.updatedAt | date: 'MMM d, y' }} · loaded from
+        <strong>{{ sourceLabel() }}</strong>
+      </p>
+      <ion-button
+        size="small"
+        fill="outline"
+        class="update-btn"
+        (click)="checkUpdates()"
+        [disabled]="loading()"
+        data-testid="check-updates"
+      >
+        @if (loading()) {
+        <ion-spinner name="dots"></ion-spinner>
+        } @else if (!online()) {
+        <ion-icon slot="start" name="cloud-offline"></ion-icon> Offline } @else {
+        <ion-icon slot="start" name="cloud-download"></ion-icon> Check for updates }
+      </ion-button>
+    </section>
+
+    <!-- 6. Help and FAQs -->
+    <section class="tm-card" id="faq">
       <h2>Help &amp; FAQs</h2>
       <ion-accordion-group>
         @for (f of faqs; track f.q) {
         <ion-accordion [value]="f.q">
           <ion-item slot="header" lines="full">
-            <ion-icon name="help-circle" slot="start" color="secondary" aria-hidden="true"></ion-icon>
+            <ion-icon name="help-circle" slot="start" color="primary" aria-hidden="true"></ion-icon>
             <ion-label class="ion-text-wrap">{{ f.q }}</ion-label>
           </ion-item>
           <div class="faq-answer" slot="content">{{ f.a }}</div>
         </ion-accordion>
         }
       </ion-accordion-group>
-      <ion-button expand="block" fill="outline" color="danger" class="hotline" [href]="'tel:' + m.hotline">
-        <ion-icon slot="start" name="call"></ion-icon> Fare complaint hotline {{ m.hotline }}
-      </ion-button>
     </section>
 
-    <section class="tm-card about">
+    <!-- 7. Fare complaint assistance -->
+    <section class="tm-card" id="complaint">
+      <h2>Fare complaint assistance</h2>
+      <ol class="steps">
+        <li>Compare the fare on your TriMeter receipt with what the driver asked. Stay calm and show the receipt.</li>
+        <li>Note the tricycle’s body number or plate number, its TODA, and the date, time and route of the trip.</li>
+        <li>Save or share the receipt. It shows the distance, the fare breakdown and the fare data version used.</li>
+        <li>Report the case to the Cabanatuan City Government (City Hall), which regulates tricycle franchises.</li>
+      </ol>
+      @if (m.hotline) {
+      <ion-button expand="block" fill="outline" color="danger" [href]="'tel:' + m.hotline">
+        <ion-icon slot="start" name="call"></ion-icon> Call {{ m.hotline }}
+      </ion-button>
+      } @else {
+      <p class="tm-muted small" data-testid="no-hotline">
+        A complaint hotline is not listed because no official number has been verified yet.
+      </p>
+      }
+    </section>
+
+    <!-- 8. About -->
+    <section class="tm-card about" id="about">
       <h2>About TriMeter</h2>
       <p>
         A GPS-based tricycle fare meter for Cabanatuan City, made by BSIT-4C for the Mobile Application Technology case
-        study.
+        study. It computes and documents fares; it is not a booking app.
       </p>
-      <p class="tm-muted small">Fare data sources:</p>
-      <ul>
-        @for (s of m.sources; track s.url) {
-        <li><a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a></li>
-        }
-      </ul>
       <p class="tm-muted small">Maps and place names © OpenStreetMap contributors. Road routes by OSRM.</p>
     </section>
     } @else {

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar class="tm-brand">
-    <ion-title>History</ion-title>
+    <ion-title>{{ title() }}</ion-title>
     @if (trips().length > 0) {
     <ion-buttons slot="end">
       <ion-button (click)="clearAll()" aria-label="Clear all history">
@@ -9,6 +9,44 @@
     </ion-buttons>
     }
   </ion-toolbar>
+  @if (trips().length > 0) {
+  <ion-toolbar class="filters">
+    <ion-searchbar
+      placeholder="Search by place"
+      searchIcon="search-outline"
+      [debounce]="250"
+      [value]="query().text"
+      (ionInput)="setText($event.detail.value)"
+      data-testid="history-search"
+    ></ion-searchbar>
+    <div class="selects">
+      <ion-select
+        aria-label="Date filter"
+        interface="popover"
+        [value]="query().range"
+        (ionChange)="setRange($event.detail.value)"
+        data-testid="history-range"
+      >
+        <ion-icon slot="start" name="calendar" aria-hidden="true"></ion-icon>
+        @for (r of ranges; track r[0]) {
+        <ion-select-option [value]="r[0]">{{ r[1] }}</ion-select-option>
+        }
+      </ion-select>
+      <ion-select
+        aria-label="Sort trips"
+        interface="popover"
+        [value]="query().sort"
+        (ionChange)="setSort($event.detail.value)"
+        data-testid="history-sort"
+      >
+        <ion-icon slot="start" name="swap-vertical" aria-hidden="true"></ion-icon>
+        @for (s of sorts; track s[0]) {
+        <ion-select-option [value]="s[0]">{{ s[1] }}</ion-select-option>
+        }
+      </ion-select>
+    </div>
+  </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content class="history">
@@ -18,36 +56,53 @@
 
   @if (trips().length > 0) {
   <section class="totals" aria-label="Totals">
-    <div><span class="tm-label">Trips</span><strong>{{ trips().length }}</strong></div>
+    <div><span class="tm-label">Trips</span><strong>{{ shown().length }}</strong></div>
     <div><span class="tm-label">Distance</span><strong>{{ totalKm() | number: '1.1-1' }} km</strong></div>
-    <div><span class="tm-label">Spent</span><strong>{{ totalFare() | peso }}</strong></div>
+    <div>
+      <span class="tm-label">{{ isDriver() ? 'Fares' : 'Spent' }}</span><strong>{{ totalFare() | peso }}</strong>
+    </div>
   </section>
 
-  <p class="hint tm-muted">Tap a trip for the receipt. Swipe left to delete.</p>
+  @if (shown().length > 0) {
+  <p class="hint tm-muted">
+    @if (filtered()) { Showing {{ shown().length }} of {{ trips().length }} trips. } Tap a trip for the receipt. Swipe
+    left to delete.
+  </p>
 
   <ion-list lines="none" class="list">
-    @for (t of trips(); track t.id) {
+    @for (t of shown(); track t.id) {
     <ion-item-sliding #sliding>
       <ion-item [routerLink]="['/trip', t.id]" detail="false" class="trip" data-testid="trip-card">
-        <div class="card">
-          <div class="info">
-            <div class="date">
-              <ion-icon name="calendar" aria-hidden="true"></ion-icon>
-              {{ t.startedAt | date: 'MMM d, y | h:mm a' }}
-              <span class="mode" [class.mode--manual]="t.mode === 'manual'"
-                >{{ t.mode === 'auto' ? 'GPS' : 'Manual' }}</span
-              >
+        <article class="card">
+          <header class="card-top">
+            <span class="date"
+              ><ion-icon name="calendar" aria-hidden="true"></ion-icon>{{ t.startedAt | date: 'MMM d, y · h:mm a'
+              }}</span
+            >
+            <span class="badge" [class.badge--estimate]="status(t) === 'estimate'"
+              >{{ statusLabels[status(t)] }} · {{ t.mode === 'auto' ? 'GPS' : 'Manual' }}</span
+            >
+          </header>
+
+          <div class="card-mid">
+            <div class="route">
+              <p><span class="dot dot--a" aria-hidden="true"></span><span class="sr">From </span>{{ t.from.label }}</p>
+              <p><span class="dot dot--b" aria-hidden="true"></span><span class="sr">To </span>{{ t.to.label }}</p>
             </div>
-            <p><strong>From:</strong> {{ t.from.label }}</p>
-            <p><strong>To:</strong> {{ t.to.label }}</p>
+            <div class="fare-col">
+              <span class="fare tm-peso">{{ t.fare.total | peso }}</span>
+              @if (t.fare.discounted && t.fare.savings > 0) {
+              <span class="was">{{ t.fare.regularTotal | peso }} <em>−{{ t.fare.savings | peso }}</em></span>
+              }
+            </div>
           </div>
-          <div class="nums">
-            <span class="tm-label">Distance</span>
-            <span class="km">{{ t.distanceKm | number: '1.1-1' }}<small> km</small></span>
-            <span class="tm-label">Price</span>
-            <span class="fare tm-peso">{{ t.fare.total | peso }}</span>
-          </div>
-        </div>
+
+          <footer class="card-meta">
+            <span>{{ t.distanceKm | number: '1.2-2' }} km</span>
+            <span>{{ t.durationSec | duration }}</span>
+            <span>{{ passengerLabels[t.passengerType] }}</span>
+          </footer>
+        </article>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="remove(t, sliding)">
@@ -58,10 +113,17 @@
     }
   </ion-list>
   } @else {
+  <div class="empty empty--small" data-testid="no-matches">
+    <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+    <h2>No matching trips</h2>
+    <p class="tm-muted">Try another place name or date range.</p>
+    <ion-button fill="outline" shape="round" (click)="clearFilters()">Clear filters</ion-button>
+  </div>
+  } } @else {
   <div class="empty" data-testid="empty-history">
     <ion-icon name="receipt-outline" aria-hidden="true"></ion-icon>
     <h2>No trips yet</h2>
-    <p class="tm-muted">Your finished trips and their receipts will appear here. They are saved only on this phone.</p>
+    <p class="tm-muted">Finished trips and their receipts will appear here. They are saved only on this phone.</p>
     <ion-button shape="round" routerLink="/tabs/meter"
       ><ion-icon slot="start" name="speedometer"></ion-icon>Start a trip</ion-button
     >

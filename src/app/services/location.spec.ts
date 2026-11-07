@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import type { TrackPoint } from '../models/trip';
 
-import { LocationService, haversineKm, judgeFix } from './location';
+import { LocationService, MIN_TRIP_KM, gpsQuality, haversineKm, judgeFix } from './location';
 
 // Two real points in Cabanatuan City.
 const SM_CITY = { lat: 15.4697, lng: 120.9502 };
@@ -77,5 +77,18 @@ describe('LocationService.addFix', () => {
   it('flags a weak signal', () => {
     service.addFix(point(15.48, 120.96, 0, 120));
     expect(service.weakSignal()).toBe(true);
+  });
+});
+
+describe('gpsQuality', () => {
+  it('rates the signal from the accuracy radius', () => {
+    expect(gpsQuality(null)).toBe('none');
+    expect(gpsQuality(6)).toBe('strong');
+    expect(gpsQuality(25)).toBe('fair');
+    expect(gpsQuality(60)).toBe('weak');
+  });
+
+  it('treats under 50 m as no trip distance', () => {
+    expect(MIN_TRIP_KM).toBe(0.05);
   });
 });
