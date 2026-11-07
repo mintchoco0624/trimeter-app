@@ -188,39 +188,41 @@
 
     <h2>3. Application Features</h2>
     <div class="shots">
-      <figure><img src="img/onboarding-3.jpg" alt="" />Onboarding</figure>
-      <figure><img src="img/meter-live-2.jpg" alt="" />Live meter</figure>
-      <figure><img src="img/receipt-overcharge.jpg" alt="" />Receipt and overcharge check</figure>
-      <figure><img src="img/estimate.jpg" alt="" />Manual estimate</figure>
-      <figure><img src="img/history.jpg" alt="" />History</figure>
-      <figure><img src="img/fare-info.jpg" alt="" />Fare info</figure>
+      <figure><img src="img/v11-role.jpg" alt="" />Role selection</figure>
+      <figure><img src="img/v11-meter-estimate.jpg" alt="" />Commuter meter with fare preview</figure>
+      <figure><img src="img/v11-driver-meter.jpg" alt="" />Driver meter</figure>
+      <figure><img src="img/v11-receipt.jpg" alt="" />Receipt and overcharge check</figure>
+      <figure><img src="img/v11-history.jpg" alt="" />History with search and filters</figure>
+      <figure><img src="img/v11-calculator.jpg" alt="" />Fare calculator</figure>
     </div>
     <ul>
       <li>
-        <b>Onboarding:</b> three short steps that explain the app and ask who is riding (Regular, Student, Senior, PWD).
-        The choice sets the discounted fare and can be changed later.
+        <b>Onboarding and roles:</b> the user chooses <i>Commuter</i> or <i>Tricycle driver</i> (as in the proposal
+        prototype). Roles are separate from the passenger type (Regular, Student, Senior, PWD), which sets the fare.
       </li>
       <li>
-        <b>Live meter (automatic mode):</b> tap <i>Start Trip</i>. The map draws the route; the distance, time and fare
-        update live; GPS accuracy is shown; the phone vibrates when the fare steps up. <i>End Trip</i> asks for
-        confirmation and saves the trip.
+        <b>Live meter (automatic mode):</b> a commuter can search “Where to?” and see the road distance and expected
+        fare before riding; a driver picks the passenger type for each trip. After <i>Start Trip</i>, the map draws the
+        route and the distance, time and fare update live, with a GPS signal indicator, an offline indicator and the
+        trip status. <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip.
       </li>
       <li>
-        <b>Trip receipt:</b> route map with A and B, place names, distance, time, and a fare breakdown (base fare,
-        succeeding km × rate, discount). The user types what the driver asked, and the app shows any overcharge in pesos
-        and percent with the complaint hotline. The receipt can be shared.
+        <b>Trip receipt:</b> route map, places, distance, time, passenger type and a fare breakdown (base fare,
+        additional distance, regular fare, discount, final fare). Commuters can type what the driver asked to see any
+        overcharge in pesos and percent. The receipt can be shared.
       </li>
       <li>
-        <b>Manual estimate (backup mode):</b> search for a place or tap the map to set A and B. The app gets the road
-        distance and shows the expected fare. Offline, it falls back to a labelled straight-line estimate.
+        <b>Manual estimate (backup mode):</b> pick A and B by search or on the map to get the road distance and fare.
+        The app offers it whenever GPS is unavailable.
       </li>
       <li>
-        <b>History:</b> all saved trips with totals. Tap a trip for its receipt, or swipe left to delete (with
-        confirmation).
+        <b>History:</b> trip cards with date, places, distance, duration, passenger type, regular fare, discount, final
+        fare and status; search by place, date filter, sorting, totals, and delete with confirmation.
       </li>
       <li>
-        <b>Fare info:</b> the fare matrix in use and its status, a gas-price band selector, example fares, FAQs and a
-        hotline button.
+        <b>Fare info and Account:</b> the fare matrix (ordinance no., effective date, source, status), a fare
+        calculator, example fares, 8 FAQs and complaint steps. Account holds the local profile, role switch, discount
+        and privacy information, and log out.
       </li>
     </ul>
 
@@ -228,8 +230,9 @@
     <p>
       The project was created with the standard Ionic workflow:
       <code>ionic start trimeter-app blank --type=angular-standalone --capacitor</code>, then every feature was
-      generated with <code>ionic generate</code>, so each has its own TypeScript file. The app has 7 pages, 1 map
-      component, 8 services, 1 route guard, 2 pipes and 2 model interfaces. The Android project was added with
+      generated with <code>ionic generate</code>, so each has its own TypeScript, HTML, SCSS and test file. The app has
+      8 pages, 4 reusable components (map, fare breakdown, place search, fare calculator), 9 services, 1 route guard, 2
+      pipes and 3 model files. Pages only display data; the work is done in services. The Android project was added with
       <code>ionic capacitor add android</code>.
     </p>
     <h3>Capacitor capabilities</h3>
@@ -239,7 +242,8 @@
         fix every 2 s on Android). Each fix passes <code>judgeFix()</code>, which rejects fixes less accurate than 35 m,
         movements under 5 m (jitter while waiting) and jumps faster than 30 m/s. Accepted fixes extend the route, and
         the distance is summed with the haversine formula. Results are Angular signals, so the UI updates automatically.
-        The Screen Wake Lock API keeps the screen on during a trip.
+        The Screen Wake Lock API keeps the screen on during a trip. Before the first permission prompt the app explains
+        why it needs location, and it tracks only between <i>Start Trip</i> and <i>End Trip</i>.
       </li>
       <li>
         <b>Haptics</b> (<code>services/feedback.ts</code>): a light tap when the fare increases, and stronger taps at
@@ -270,20 +274,27 @@
       <li>
         <b>Local data</b> (<code>services/trip-storage.ts</code>): Capacitor Preferences stores the trip history as JSON
         with create (<code>add</code>), read (<code>load</code>/<code>get</code>), update (<code>update</code>: what the
-        driver asked) and delete (<code>remove</code>/<code>clear</code>). Settings (passenger type, gas band,
-        onboarding) are stored the same way.
+        driver asked) and delete (<code>remove</code>/<code>clear</code>). The local profile (role, name, passenger
+        type, gas band) is stored the same way; there is no server account. History search, date filter and sorting are
+        a pure function (<code>services/trip-query.ts</code>) so they are unit-tested.
+      </li>
+      <li>
+        <b>Validation and errors:</b> the calculator checks the typed distance; a destination closer than 100 m is
+        rejected; failed saves offer a retry; offline, place search explains the problem and road distance falls back to
+        a labelled straight-line estimate.
       </li>
       <li>
         <b>Navigation:</b> a functional route guard sends first-time users to onboarding; the tabs are Meter, History
-        and Fare Info. Android permissions: fine and coarse location, internet, vibrate.
+        (drivers: Trips), Fare Info and Account. Android permissions: fine and coarse location, internet, vibrate.
       </li>
     </ul>
 
     <h2>5. Testing and Evaluation</h2>
     <p>
-      Automated tests: <b>41 unit tests</b> (Vitest) for the fare rules, GPS filter, pipes and onboarding guard, and
-      <b>4 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
-      Mall → NEUST, from OSRM) as GPS fixes. All automated tests pass, and <code>ng lint</code> is clean.
+      Automated tests: <b>73 unit tests</b> (Vitest) for the fare rules, receipt breakdown, GPS filter, history search,
+      calculator validation, settings, roles and pages, and <b>8 end-to-end tests</b> (Playwright, Chrome). The
+      end-to-end tests replay a real 4.56 km road route (NE Pacific Mall → NEUST, from OSRM) as GPS fixes, with the
+      online services mocked so results are repeatable. All automated tests pass, and <code>ng lint</code> is clean.
     </p>
     <table>
       <tr>
@@ -293,8 +304,8 @@
         <th>Status</th>
       </tr>
       <tr>
-        <td>Onboarding and passenger type</td>
-        <td>Choice saved; Meter opens</td>
+        <td>Role selection (commuter / driver)</td>
+        <td>Role saved; tabs and Meter change</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
@@ -305,9 +316,15 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Student fare before moving</td>
-        <td>₱28 minimum</td>
-        <td>₱28</td>
+        <td>Driver, student passenger, same route</td>
+        <td>₱36; receipt shows ₱45 − ₱9 discount</td>
+        <td>₱36, as expected</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
+        <td>Destination preview (commuter)</td>
+        <td>4.6 km by road, ₱45 before the ride</td>
+        <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
@@ -317,8 +334,14 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Save trip, reload app, delete trip</td>
-        <td>Trip kept after reload; deletable with confirmation</td>
+        <td>End a trip with no distance</td>
+        <td>Not saved; “Discard trip” offered</td>
+        <td>As expected</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
+        <td>Save, reload, search and delete a trip</td>
+        <td>Kept after reload; search filters; delete confirmed</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
@@ -329,8 +352,14 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Fare at 3.2 km / 3.004 km</td>
-        <td>+1 km / no extra km</td>
+        <td>Calculator: 4.56 km student; invalid input</td>
+        <td>₱36; error message for 0 or text</td>
+        <td>As expected</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
+        <td>Offline place search / road distance</td>
+        <td>Clear message; straight-line fallback</td>
         <td>As expected (unit test)</td>
         <td class="pass">Pass</td>
       </tr>
@@ -354,8 +383,13 @@
       </li>
       <li>The app must stay open during a trip; Android can pause GPS updates in the background.</li>
       <li>
-        The fare matrix is a community copy of Ordinance No. 050-2026 that is not yet verified with the city, so the app
-        labels it “Unconfirmed”.
+        The fare matrix is a community copy of Ordinance No. 050-2026. A Rappler fact check (April 2026) reported it was
+        still a draft, so the app labels it “Unconfirmed” and shows the effective date as “Not confirmed”. An unverified
+        complaint hotline was removed.
+      </li>
+      <li>
+        Roles and the profile are stored only on the phone: there is no real login, and discounts depend on the driver
+        checking a valid ID.
       </li>
       <li>Maps, place names and manual road distance need an internet connection (the GPS meter itself does not).</li>
     </ul>
@@ -365,7 +399,7 @@
         A foreground service so tracking continues with the screen off (<i>visibility of system status</i>,
         <i>error prevention</i>).
       </li>
-      <li>Verify the fare matrix with the City Tricycle Franchising and Regulatory Board and host it online.</li>
+      <li>Verify the fare matrix and a complaint hotline with the Cabanatuan City Government.</li>
       <li>
         A Filipino language option and a larger-text mode; some secondary labels are 11–12 px (<i
           >match with the real world</i
@@ -379,11 +413,13 @@
     <h2>6. AI Usage Disclosure</h2>
     <p>
       <b>Tool:</b> Claude Code (Anthropic), an AI coding assistant used in VS Code. <b>How it assisted:</b> scaffolding
-      the project with the Ionic CLI, writing and refactoring the services, pages and tests, researching the fare data
-      sources, and producing the Remotion presentation video and script. <b>What the group did:</b> reviewed the
-      generated code, ran the unit and end-to-end tests, tested the APK on an Android phone, and fixed the issues found.
-      The group can explain the main code (<code>location.ts</code>, <code>fare.ts</code>, <code>fare-matrix.ts</code>,
-      <code>trip-storage.ts</code>). No passwords, private keys or personal data were used in prompts or code.
+      the project with the Ionic CLI, writing and refactoring the services, pages and tests, implementing the group’s
+      improvement brief (roles, fare calculator, history filters, error handling), researching and fact-checking the
+      fare data sources, and producing the Remotion presentation video and script. <b>What the group did:</b> reviewed
+      the generated code, ran the unit and end-to-end tests, tested the APK on an Android phone, and fixed the issues
+      found. The group can explain the main code (<code>location.ts</code>, <code>fare.ts</code>,
+      <code>fare-matrix.ts</code>, <code>trip-storage.ts</code>). No passwords, private keys or personal data were used
+      in prompts or code.
     </p>
     <div class="note">
       Before submitting, the group should confirm the device test and edit this section to describe exactly what each

@@ -10,12 +10,16 @@ TriMeter measures the real distance of a tricycle ride with the phone's GPS and 
 
 | Feature | Where in the code |
 |---|---|
-| Onboarding and passenger type (Regular, Student, Senior, PWD) | `src/app/pages/onboarding/onboarding.page.ts` |
-| Live GPS fare meter (automatic mode) with Leaflet map, haptics | `src/app/pages/meter/meter.page.ts`, `src/app/services/location.ts` |
-| Manual estimate (backup mode): search or tap A and B, OSRM road distance | `src/app/pages/estimate/estimate.page.ts`, `src/app/services/routing.ts` |
-| Trip receipt: fare breakdown, overcharge check, share | `src/app/pages/trip-summary/trip-summary.page.ts` |
-| Trip history: view, swipe to delete, totals | `src/app/pages/history/history.page.ts`, `src/app/services/trip-storage.ts` |
-| Fare info: fare matrix, gas price band, example fares, FAQ | `src/app/pages/fare-info/fare-info.page.ts`, `src/app/services/fare-matrix.ts` |
+| Onboarding with role selection (commuter / tricycle driver) and passenger type (Regular, Student, Senior, PWD) | `src/app/pages/onboarding/onboarding.page.ts`, `src/app/services/settings.ts` |
+| Live GPS fare meter: Leaflet map, GPS signal and offline indicators, trip status, haptics | `src/app/pages/meter/meter.page.ts`, `src/app/services/location.ts` |
+| Commuter: “Where to?” search with road distance and fare preview before the ride | `src/app/components/place-search/`, `src/app/services/routing.ts` |
+| Driver: passenger type chosen per trip; History becomes “Trips” records | `src/app/pages/meter/meter.page.ts`, `src/app/pages/tabs/tabs.page.ts` |
+| Trip rules: confirm before ending, no saving under 50 m, double-tap protection, save retry, Manual mode fallback when GPS fails | `src/app/pages/meter/meter.page.ts` |
+| Manual estimate (backup mode): search or tap A and B, OSRM road distance | `src/app/pages/estimate/estimate.page.ts` |
+| Trip receipt: regular fare, discount and final fare, overcharge check (commuters), share | `src/app/pages/trip-summary/`, `src/app/components/fare-breakdown/` |
+| History: search by place, date filter, sorting, totals, swipe to delete | `src/app/pages/history/`, `src/app/services/trip-query.ts` |
+| Fare info: fare matrix (ordinance no., effective date, source, status), fare calculator, examples, 8 FAQs, complaint steps | `src/app/pages/fare-info/`, `src/app/components/fare-calculator/` |
+| Account: local profile, role switch, discount and privacy information, log out | `src/app/pages/account/account.page.ts` |
 | Fare computation | `src/app/services/fare.ts` |
 
 ## Mobile capabilities and data handling
@@ -26,7 +30,7 @@ TriMeter measures the real distance of a tricycle ride with the phone's GPS and 
 - **Local data** (`@capacitor/preferences`): trip history is saved on the phone (create, read, update, delete), along with the settings.
 - **HttpClient GET** (Angular): loads the fare matrix JSON, falling back to a saved copy and then a bundled copy. Also calls OpenStreetMap Nominatim for place names and OSRM for road distance.
 
-No accounts, passwords or API keys are used. All endpoints are public and key-free (see `src/environments/environment.ts`).
+There is no server account: the profile and role are stored only on the phone, and “Log out” clears them. No passwords or API keys are used. All endpoints are public and key-free (see `src/environments/environment.ts`).
 
 ## Fare data
 
@@ -37,7 +41,7 @@ No accounts, passwords or API keys are used. All endpoints are public and key-fr
 - Part of a km counts as a full km
 - Gasoline-price bands raise the fare in steps
 
-These figures are **not yet verified** with the city, and the app labels them "Unconfirmed". The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
+These figures are **not yet verified** with the city, and the app labels them "Unconfirmed". A [Rappler fact check](https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/) (April 2026) reported that the matrix was still a draft and that the last official adjustment was in November 2018, so the effective date is shown as "Not confirmed" (`effectiveDate: null`). No complaint hotline is listed until an official number is verified (`hotline: ""`). The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
 
 ## Setup (development)
 
@@ -54,9 +58,9 @@ In the browser, allow location access. Chrome DevTools > More tools > Sensors ca
 ### Tests
 
 ```bash
-npm run test:unit      # 41 unit tests (Vitest): fare rules, GPS filter, pipes, guard
+npm run test:unit      # 73 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
 npx ng serve --port 4200 &   # then, in another terminal:
-npm run test:e2e       # 4 Playwright tests: a full 4.56 km GPS trip replayed in Chrome
+npm run test:e2e       # 8 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, online services mocked
 npm run lint
 ```
 
@@ -89,13 +93,13 @@ The internet is needed for the map tiles, place names and road distance. GPS dis
 
 ```
 src/app/
-  pages/        onboarding, tabs, meter, estimate, trip-summary, history, fare-info   (ionic g page)
-  components/   trip-map (Leaflet)                                                   (ionic g component)
+  pages/        onboarding, tabs, meter, estimate, trip-summary, history, fare-info, account   (ionic g page)
+  components/   trip-map (Leaflet), fare-breakdown, place-search, fare-calculator            (ionic g component)
   services/     location, fare, fare-matrix, trip-storage, geocode, routing,
-                settings, feedback                                                   (ionic g service)
+                settings, feedback, connectivity; trip-query (search/filter/sort) (ionic g service)
   guards/       onboarding-guard                                                     (ionic g guard)
   pipes/        peso, duration                                                       (ionic g pipe)
-  models/       trip, fare-matrix                                                    (ionic g interface)
+  models/       trip, fare-matrix, profile                                           (ionic g interface)
 e2e/            Playwright tests with a replayed GPS route
 android/        Capacitor Android project
 ```
@@ -105,6 +109,7 @@ android/        Capacitor Android project
 - Phone GPS can drift near tall buildings or in bad weather.
 - The app must stay open during a trip, because Android can pause tracking in the background. The screen is kept awake with the Wake Lock API.
 - The fare matrix is unconfirmed (see Fare data).
+- Roles and the profile are local only: there is no real login or ID verification. Discounts rely on the driver checking a valid ID.
 
 ## AI assistance
 
