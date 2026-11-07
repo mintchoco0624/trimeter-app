@@ -17,20 +17,7 @@ import {
   IonToolbar,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import {
-  car,
-  close,
-  cloudOffline,
-  flag,
-  locate,
-  map,
-  navigate,
-  person,
-  play,
-  stop,
-  time,
-  warning,
-} from 'ionicons/icons';
+import { close, cloudOffline, flag, locate, map, navigate, person, play, stop, time, warning } from 'ionicons/icons';
 
 import { PlaceSearchComponent } from '../../components/place-search/place-search.component';
 import { TripMapComponent } from '../../components/trip-map/trip-map.component';
@@ -154,7 +141,7 @@ export class MeterPage implements OnDestroy {
   private startLookupDone = false;
 
   constructor() {
-    addIcons({ play, stop, locate, map, navigate, person, warning, close, flag, cloudOffline, time, car });
+    addIcons({ play, stop, locate, map, navigate, person, warning, close, flag, cloudOffline, time });
 
     // Haptic tick whenever the fare goes up during a trip.
     effect(() => {

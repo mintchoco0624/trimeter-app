@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'TriMeter',
   webDir: 'www',
   plugins: {
-    StatusBar: { backgroundColor: '#24419B', style: 'DARK', overlaysWebView: false },
+    StatusBar: { backgroundColor: '#224194', style: 'DARK', overlaysWebView: false },
   },
 };
 

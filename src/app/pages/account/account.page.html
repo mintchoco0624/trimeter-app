@@ -11,7 +11,10 @@
       <div class="who">
         <strong class="name">{{ displayName() || 'Add your name' }}</strong>
         <span class="role-chip" data-testid="account-role">
-          <ion-icon [name]="role() === 'driver' ? 'car' : 'walk'" aria-hidden="true"></ion-icon>
+          <span
+            [class]="'tm-glyph tm-glyph--' + (role() === 'driver' ? 'tricycle' : 'commuter')"
+            aria-hidden="true"
+          ></span>
           {{ roleLabels[role()] }}
         </span>
       </div>

@@ -10,20 +10,20 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+@import '@ionic/angular/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
 
 /**
  * Ionic Dark Mode
@@ -76,7 +76,9 @@ ion-toolbar.tm-brand {
   border-radius: 50%;
   border: 3px solid #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-  font: 800 12px/1 system-ui, sans-serif;
+  font:
+    800 12px/1 system-ui,
+    sans-serif;
   color: #fff;
 }
 .tm-marker--here {
@@ -90,6 +92,29 @@ ion-toolbar.tm-brand {
   background: #d64545;
 }
 @keyframes tm-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(36, 65, 155, 0.55); }
-  100% { box-shadow: 0 0 0 18px rgba(36, 65, 155, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 65, 148, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgba(34, 65, 148, 0);
+  }
+}
+
+/* Role icons cut from the group's Figma prototype. Used as masks so they take the text colour. */
+.tm-glyph {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+}
+.tm-glyph--tricycle {
+  -webkit-mask-image: url('./assets/img/icon-tricycle.png');
+  mask-image: url('./assets/img/icon-tricycle.png');
+}
+.tm-glyph--commuter {
+  -webkit-mask-image: url('./assets/img/icon-commuter.png');
+  mask-image: url('./assets/img/icon-commuter.png');
 }

@@ -15,7 +15,6 @@ import {
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
-  car,
   chatbubbles,
   create,
   helpCircle,
@@ -26,7 +25,6 @@ import {
   pricetag,
   swapHorizontal,
   trash,
-  walk,
 } from 'ionicons/icons';
 
 import { PASSENGER_LABELS } from '../../models/fare-matrix';
@@ -88,8 +86,6 @@ export class AccountPage {
       chatbubbles,
       trash,
       logOut,
-      car,
-      walk,
       pricetag,
     });
   }

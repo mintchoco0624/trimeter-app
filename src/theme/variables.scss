@@ -1,12 +1,12 @@
-// TriMeter brand colours, taken from the group's proposal (navy, pink, cream).
+// TriMeter brand colours from the group's Figma prototype (navy #224194, pink, cream).
 // For information on theming, see https://ionicframework.com/docs/theming/
 :root {
-  --ion-color-primary: #24419b;
-  --ion-color-primary-rgb: 36, 65, 155;
+  --ion-color-primary: #224194;
+  --ion-color-primary-rgb: 34, 65, 148;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #203988;
-  --ion-color-primary-tint: #3a54a5;
+  --ion-color-primary-shade: #1e3982;
+  --ion-color-primary-tint: #38549f;
 
   --ion-color-secondary: #f4a5a5;
   --ion-color-secondary-rgb: 244, 165, 165;
@@ -40,7 +40,7 @@
   --ion-text-color: #1b2a5c;
   --ion-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --tm-navy: #24419b;
+  --tm-navy: #224194;
   --tm-navy-deep: #1a2f73;
   --tm-pink: #f4a5a5;
   --tm-cream: #fbe8d3;

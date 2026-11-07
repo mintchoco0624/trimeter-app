@@ -27,7 +27,7 @@
           (click)="role.set(r.role)"
           [attr.data-testid]="'role-' + r.role"
         >
-          <ion-icon [name]="r.icon" aria-hidden="true"></ion-icon>
+          <span [class]="'tm-glyph tm-glyph--' + r.glyph" aria-hidden="true"></span>
           <span class="role__title">{{ r.title }}</span>
           <span class="role__hint">{{ r.hint }}</span>
         </button>

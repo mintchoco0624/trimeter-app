@@ -50,7 +50,7 @@ h2,
   text-align: center;
 }
 .logo {
-  width: 220px;
+  width: 240px;
   border-radius: 28px;
   margin-bottom: 8px;
 }
@@ -116,8 +116,8 @@ p {
   font: inherit;
   min-height: 120px;
 }
-.role ion-icon {
-  font-size: 44px;
+.role .tm-glyph {
+  font-size: 72px;
 }
 .role__title {
   font-weight: 800;
@@ -193,4 +193,9 @@ p {
 .buttons {
   display: flex;
   gap: 4px;
+}
+
+/* Heading colour from the Figma role screen. */
+[data-testid='step-role'] h2 {
+  color: var(--tm-cream);
 }

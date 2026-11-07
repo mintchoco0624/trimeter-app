@@ -4,7 +4,7 @@
     <ion-buttons slot="end">
       @if (isDriver()) {
       <span class="role-badge" data-testid="role-badge"
-        ><ion-icon name="car" aria-hidden="true"></ion-icon> Driver</span
+        ><span class="tm-glyph tm-glyph--tricycle" aria-hidden="true"></span> Driver</span
       >
       } @else {
       <ion-chip class="passenger" routerLink="/tabs/fare-info" aria-label="Passenger type, tap to change">

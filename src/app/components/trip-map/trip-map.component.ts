@@ -112,8 +112,8 @@ export class TripMapComponent implements OnDestroy {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
 
-    this.planLine = L.polyline([], { color: '#24419B', weight: 5, opacity: 0.55, dashArray: '8 10' }).addTo(this.map);
-    this.line = L.polyline([], { color: '#24419B', weight: 6, opacity: 0.9, lineCap: 'round' }).addTo(this.map);
+    this.planLine = L.polyline([], { color: '#224194', weight: 5, opacity: 0.55, dashArray: '8 10' }).addTo(this.map);
+    this.line = L.polyline([], { color: '#224194', weight: 6, opacity: 0.9, lineCap: 'round' }).addTo(this.map);
     this.map.on('click', (e: L.LeafletMouseEvent) => this.mapClick.emit({ lat: e.latlng.lat, lng: e.latlng.lng }));
 
     // Ionic animates pages in, so the size can change after creation: tell Leaflet to re-measure.

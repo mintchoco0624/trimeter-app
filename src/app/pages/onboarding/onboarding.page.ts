@@ -6,7 +6,6 @@ import {
   accessibility,
   arrowForward,
   briefcase,
-  car,
   cash,
   location,
   receipt,
@@ -27,7 +26,8 @@ interface PassengerOption {
 
 interface RoleOption {
   role: AppRole;
-  icon: string;
+  /** Icon from the Figma prototype (see .tm-glyph in global.scss). */
+  glyph: 'tricycle' | 'commuter';
   title: string;
   hint: string;
 }
@@ -60,8 +60,8 @@ export class OnboardingPage {
   readonly labels = PASSENGER_LABELS;
 
   readonly roles: RoleOption[] = [
-    { role: 'commuter', icon: 'walk', title: 'Commuter', hint: 'Check the fair fare for my ride' },
-    { role: 'driver', icon: 'car', title: 'Tricycle driver', hint: 'Meter and record my trips' },
+    { role: 'driver', glyph: 'tricycle', title: 'Tricycle driver', hint: 'Meter and record my trips' },
+    { role: 'commuter', glyph: 'commuter', title: 'Commuter', hint: 'Check the fair fare for my ride' },
   ];
 
   readonly options: PassengerOption[] = [
@@ -72,7 +72,7 @@ export class OnboardingPage {
   ];
 
   constructor() {
-    addIcons({ arrowForward, location, cash, shieldCheckmark, briefcase, school, walk, accessibility, car, receipt });
+    addIcons({ arrowForward, location, cash, shieldCheckmark, briefcase, school, walk, accessibility, receipt });
   }
 
   next(): void {
