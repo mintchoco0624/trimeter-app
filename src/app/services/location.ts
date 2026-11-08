@@ -108,6 +108,23 @@ export class LocationService {
   async start(): Promise<void> {
     await this.ensurePermission();
     this.reset();
+    await this.watch();
+  }
+
+  /**
+   * Continues an interrupted trip: restores the saved route and distance, then listens for GPS again.
+   * Movement while the app was closed is counted as a straight line to the next fix (if it passes judgeFix).
+   */
+  async resume(points: TrackPoint[], distanceKm: number): Promise<void> {
+    await this.ensurePermission();
+    this.reset();
+    this.points.set(points);
+    this.distanceKm.set(distanceKm);
+    this.lastFix.set(points.at(-1) ?? null);
+    await this.watch();
+  }
+
+  private async watch(): Promise<void> {
     this.tracking.set(true);
     await this.keepScreenOn();
     this.watchId = await Geolocation.watchPosition(

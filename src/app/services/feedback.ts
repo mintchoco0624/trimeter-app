@@ -23,13 +23,21 @@ export class FeedbackService {
     await alert.onDidDismiss();
   }
 
-  /** Shows a Cancel / confirm dialog and resolves to true when the user confirms. */
-  async confirm(header: string, message: string, confirmText = 'OK', destructive = false): Promise<boolean> {
+  /** Shows a cancel / confirm dialog and resolves to true when the user confirms. */
+  async confirm(
+    header: string,
+    message: string,
+    confirmText = 'OK',
+    destructive = false,
+    cancelText = 'Cancel',
+  ): Promise<boolean> {
     const alert = await this.alertCtrl.create({
       header,
       message,
+      // An accidental tap outside the dialog must not count as an answer (e.g. discarding a trip).
+      backdropDismiss: false,
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
+        { text: cancelText, role: 'cancel' },
         { text: confirmText, role: destructive ? 'destructive' : 'confirm' },
       ],
     });

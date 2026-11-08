@@ -144,6 +144,40 @@ test('driver: picks the passenger per trip, and the record has no overcharge che
   await expect(page.getByTestId('asked')).toHaveCount(0);
 });
 
+test('an interrupted trip can be resumed after the app restarts', async ({ page }) => {
+  await finishOnboarding(page, 'commuter');
+  const fixes = densify(ROUTE, 12);
+  const half = Math.floor(fixes.length / 2);
+  let t = Date.now();
+  await pushFix(page, fixes[0], t);
+  await page.getByTestId('start').click();
+  await expect(page.getByTestId('end')).toBeVisible();
+  for (const fix of fixes.slice(0, half)) {
+    t += 1000;
+    await pushFix(page, fix, t);
+  }
+  const before = (await page.getByTestId('distance').textContent())?.trim() ?? '';
+  // The trip is saved every 5 seconds; wait for one snapshot, then "close" the app.
+  await page.waitForTimeout(5500);
+  await page.reload();
+
+  await expect(page.locator('ion-alert')).toContainText('Unfinished trip');
+  await page.locator('ion-alert button', { hasText: 'Resume' }).click();
+  await expect(page.getByTestId('trip-status')).toHaveText(/On trip/);
+  await expect(page.getByTestId('distance')).toHaveText(before);
+  await page.waitForTimeout(1000); // let the GPS watch restart before new fixes arrive
+
+  for (const fix of fixes.slice(half)) {
+    t += 1000;
+    await pushFix(page, fix, t);
+  }
+  await expect(page.getByTestId('distance')).toHaveText(/4\.5\d/);
+  await expect(page.getByTestId('fare')).toHaveText('₱45');
+  await page.getByTestId('end').click();
+  await page.locator('ion-alert button', { hasText: 'End trip' }).click();
+  await expect(page.getByTestId('receipt-total')).toHaveText('₱45', { timeout: 20000 });
+});
+
 test('a trip with no distance cannot be saved', async ({ page }) => {
   await finishOnboarding(page, 'commuter');
   const t = Date.now();

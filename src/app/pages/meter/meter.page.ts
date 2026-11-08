@@ -33,6 +33,7 @@ import { GeocodeService } from '../../services/geocode';
 import { LocationService, MIN_TRIP_KM, gpsQuality, haversineKm } from '../../services/location';
 import { type RouteResult, RoutingService } from '../../services/routing';
 import { SettingsService } from '../../services/settings';
+import { type ActiveTrip, TripRecoveryService } from '../../services/trip-recovery';
 import { TripStorageService } from '../../services/trip-storage';
 
 /** ready -> starting -> onTrip -> ending -> ready. Buttons only work in the matching phase. */
@@ -83,6 +84,7 @@ export class MeterPage implements OnDestroy {
   private routing = inject(RoutingService);
   private feedback = inject(FeedbackService);
   private router = inject(Router);
+  private recovery = inject(TripRecoveryService);
 
   private readonly map = viewChild(TripMapComponent);
 
@@ -137,6 +139,9 @@ export class MeterPage implements OnDestroy {
 
   private startedAt = 0;
   private timer?: ReturnType<typeof setInterval>;
+  /** Saves the trip in progress every few seconds, so a crash or closed app does not lose it. */
+  private autosave?: ReturnType<typeof setInterval>;
+  private recoveryChecked = false;
   private lastTotal = 0;
   private startLookupDone = false;
 
@@ -161,6 +166,11 @@ export class MeterPage implements OnDestroy {
 
   /** Ionic lifecycle: each time the Meter tab opens, show where the user is (only if already allowed). */
   async ionViewDidEnter(): Promise<void> {
+    // Once per app start: offer to continue a trip that was interrupted (crash, app closed, phone restarted).
+    if (!this.recoveryChecked) {
+      this.recoveryChecked = true;
+      if (await this.offerResume()) return;
+    }
     if (this.onTrip() || this.preview() || !(await this.location.isGranted())) return;
     try {
       const here = await this.location.getCurrent();
@@ -252,7 +262,7 @@ export class MeterPage implements OnDestroy {
       await this.location.start();
       this.startedAt = Date.now();
       this.elapsedSec.set(0);
-      this.timer = setInterval(() => this.elapsedSec.set(Math.round((Date.now() - this.startedAt) / 1000)), 1000);
+      this.startTimers();
       this.phase.set('onTrip');
       void this.feedback.bump();
       void this.feedback.toast('Trip started. Keep the app open while riding.', 'success');
@@ -298,6 +308,8 @@ export class MeterPage implements OnDestroy {
 
     await this.location.stop();
     clearInterval(this.timer);
+    // Stop snapshots; the last one stays until the trip is saved, in case saving fails.
+    clearInterval(this.autosave);
 
     const points = this.location.points();
     const first = points[0];
@@ -350,6 +362,7 @@ export class MeterPage implements OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.timer);
+    clearInterval(this.autosave);
   }
 
   // ----- Helpers -----
@@ -362,11 +375,96 @@ export class MeterPage implements OnDestroy {
 
   private resetTrip(): void {
     clearInterval(this.timer);
+    clearInterval(this.autosave);
+    void this.recovery.clear();
     this.location.reset();
     this.elapsedSec.set(0);
     this.driverPassenger.set('regular');
     this.clearDestination();
     this.phase.set('ready');
+  }
+
+  // ----- Recovering an interrupted trip -----
+
+  /** Asks to resume an unfinished trip. Resolves to true when one was found (resumed or discarded). */
+  private async offerResume(): Promise<boolean> {
+    const saved = await this.recovery.load();
+    if (!saved) return false;
+    const started = new Date(saved.startedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const resume = await this.feedback.confirm(
+      'Unfinished trip',
+      `A trip that started at ${started} was interrupted (${saved.distanceKm.toFixed(2)} km so far). ` +
+        'Resume it to keep metering, or discard it.',
+      'Resume',
+      false,
+      'Discard',
+    );
+    if (resume) {
+      await this.resumeTrip(saved);
+    } else {
+      await this.recovery.clear();
+      await this.feedback.toast('Unfinished trip discarded.');
+    }
+    return true;
+  }
+
+  private async resumeTrip(saved: ActiveTrip): Promise<void> {
+    this.phase.set('starting');
+    if (!(await this.askForLocation())) {
+      this.phase.set('ready');
+      return;
+    }
+    try {
+      if (saved.role === 'driver') this.driverPassenger.set(saved.passenger);
+      this.startPlace.set(saved.startPlace ?? null);
+      this.startLookupDone = !!saved.startPlace;
+      this.destination.set(saved.destination ?? null);
+      this.estimate.set(saved.estimate ? { ...saved.estimate, path: [] } : null);
+      this.lastTotal = 0;
+      await this.location.resume(saved.points, saved.distanceKm);
+      this.startedAt = saved.startedAt;
+      this.startTimers();
+      this.phase.set('onTrip');
+      void this.feedback.bump();
+      void this.feedback.toast('Trip resumed. Keep the app open while riding.', 'success');
+    } catch (e) {
+      await this.location.stop();
+      this.phase.set('ready');
+      await this.offerManual('GPS unavailable', this.message(e, 'Could not resume GPS tracking.'));
+    }
+  }
+
+  /** Starts the trip clock and the snapshot saver (one snapshot now, then every 5 seconds). */
+  private startTimers(): void {
+    const tick = () => this.elapsedSec.set(Math.round((Date.now() - this.startedAt) / 1000));
+    tick();
+    this.timer = setInterval(tick, 1000);
+    void this.recovery.save(this.snapshot());
+    this.autosave = setInterval(() => void this.recovery.save(this.snapshot()), 5000);
+  }
+
+  private snapshot(): ActiveTrip {
+    const estimate = this.estimate();
+    const fare = this.estimateFare();
+    return {
+      startedAt: this.startedAt,
+      savedAt: Date.now(),
+      points: this.location.points(),
+      distanceKm: this.distanceKm(),
+      passenger: this.passenger(),
+      role: this.settings.role(),
+      startPlace: this.startPlace() ?? undefined,
+      destination: this.destination() ?? undefined,
+      estimate:
+        estimate && fare
+          ? {
+              distanceKm: estimate.distanceKm,
+              durationMin: estimate.durationMin,
+              fare: fare.total,
+              kind: estimate.kind,
+            }
+          : undefined,
+    };
   }
 
   /** Saves the trip; on failure asks to try again. Resolves to true when saved. */

@@ -15,6 +15,7 @@ TriMeter measures the real distance of a tricycle ride with the phone's GPS and 
 | Commuter: “Where to?” search with road distance and fare preview before the ride | `src/app/components/place-search/`, `src/app/services/routing.ts` |
 | Driver: passenger type chosen per trip; History becomes “Trips” records | `src/app/pages/meter/meter.page.ts`, `src/app/pages/tabs/tabs.page.ts` |
 | Trip rules: confirm before ending, no saving under 50 m, double-tap protection, save retry, Manual mode fallback when GPS fails | `src/app/pages/meter/meter.page.ts` |
+| Resume an interrupted trip: the trip in progress is saved every 5 s; after a crash or restart the Meter offers Resume or Discard | `src/app/services/trip-recovery.ts`, `src/app/services/location.ts` |
 | Manual estimate (backup mode): search or tap A and B, OSRM road distance | `src/app/pages/estimate/estimate.page.ts` |
 | Trip receipt: regular fare, discount and final fare, overcharge check (commuters), share | `src/app/pages/trip-summary/`, `src/app/components/fare-breakdown/` |
 | History: search by place, date filter, sorting, totals, swipe to delete | `src/app/pages/history/`, `src/app/services/trip-query.ts` |
@@ -63,9 +64,9 @@ In the browser, allow location access. Chrome DevTools > More tools > Sensors ca
 ### Tests
 
 ```bash
-npm run test:unit      # 77 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
+npm run test:unit      # 83 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
 npx ng serve --port 4200 &   # then, in another terminal:
-npm run test:e2e       # 8 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, online services mocked
+npm run test:e2e       # 9 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, resuming a trip after a restart, online services mocked
 npm run lint
 ```
 
@@ -112,7 +113,7 @@ android/        Capacitor Android project
 ## Known limitations
 
 - Phone GPS can drift near tall buildings or in bad weather.
-- The app must stay open during a trip, because Android can pause tracking in the background. The screen is kept awake with the Wake Lock API.
+- The app should stay open during a trip, because Android can pause tracking in the background (the screen is kept awake with the Wake Lock API). If the app is closed or crashes, the trip can be resumed; movement while it was closed is counted as a straight line.
 - Roles and the profile are local only: there is no real login or ID verification. Discounts rely on the driver checking a valid ID.
 
 ## AI assistance

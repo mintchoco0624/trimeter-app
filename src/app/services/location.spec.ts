@@ -92,3 +92,29 @@ describe('gpsQuality', () => {
     expect(MIN_TRIP_KM).toBe(0.05);
   });
 });
+
+describe('LocationService.resume', () => {
+  let service: LocationService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(LocationService);
+    vi.spyOn(service, 'ensurePermission').mockResolvedValue();
+    // Capacitor plugins are proxies, so stub the service's own GPS watch instead of the plugin.
+    vi.spyOn(service as unknown as { watch: () => Promise<void> }, 'watch').mockImplementation(async () => {
+      service.tracking.set(true);
+    });
+  });
+
+  it('restores the saved route and keeps counting from the last point', async () => {
+    const saved = [point(15.48, 120.96, 0), point(15.4801, 120.96, 3000)];
+    await service.resume(saved, 0.5);
+
+    expect(service.tracking()).toBe(true);
+    expect(service.points()).toEqual(saved);
+    expect(service.distanceKm()).toBe(0.5);
+
+    service.addFix(point(15.4802, 120.96, 6000)); // about 11 m after the last saved point
+    expect(service.distanceKm()).toBeCloseTo(0.511, 3);
+  });
+});

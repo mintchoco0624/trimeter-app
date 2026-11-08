@@ -204,7 +204,8 @@
         <b>Live meter (automatic mode):</b> a commuter can search “Where to?” and see the road distance and expected
         fare before riding; a driver picks the passenger type for each trip. After <i>Start Trip</i>, the map draws the
         route and the distance, time and fare update live, with a GPS signal indicator, an offline indicator and the
-        trip status. <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip.
+        trip status. <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip. If the app
+        closes or crashes mid-trip, the Meter offers to resume it.
       </li>
       <li>
         <b>Trip receipt:</b> route map, places, distance, time, passenger type and a fare breakdown (base fare,
@@ -276,8 +277,9 @@
         <b>Local data</b> (<code>services/trip-storage.ts</code>): Capacitor Preferences stores the trip history as JSON
         with create (<code>add</code>), read (<code>load</code>/<code>get</code>), update (<code>update</code>: what the
         driver asked) and delete (<code>remove</code>/<code>clear</code>). The local profile (role, name, passenger
-        type, gas band) is stored the same way; there is no server account. History search, date filter and sorting are
-        a pure function (<code>services/trip-query.ts</code>) so they are unit-tested.
+        type, gas band) is stored the same way; there is no server account. The trip in progress is also saved every 5
+        seconds (<code>services/trip-recovery.ts</code>), so it can be resumed after a crash. History search, date
+        filter and sorting are a pure function (<code>services/trip-query.ts</code>) so they are unit-tested.
       </li>
       <li>
         <b>Validation and errors:</b> the calculator checks the typed distance; a destination closer than 100 m is
@@ -292,9 +294,9 @@
 
     <h2>5. Testing and Evaluation</h2>
     <p>
-      Automated tests: <b>77 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
+      Automated tests: <b>83 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
       receipt breakdown, GPS filter, history search, calculator validation, settings, roles and pages, and
-      <b>8 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
+      <b>9 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
       Mall → NEUST, from OSRM) as GPS fixes, with the online services mocked so results are repeatable. All automated
       tests pass, and <code>ng lint</code> is clean.
     </p>
@@ -366,6 +368,12 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
+        <td>App closed mid-trip, then resumed</td>
+        <td>Distance kept; full trip charged ₱45</td>
+        <td>As expected</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
         <td>Offline place search / road distance</td>
         <td>Clear message; straight-line fallback</td>
         <td>As expected (unit test)</td>
@@ -395,7 +403,11 @@
         Phone GPS drifts near tall buildings and in bad weather, so the distance can differ slightly from the road
         distance.
       </li>
-      <li>The app must stay open during a trip; Android can pause GPS updates in the background.</li>
+      <li>
+        The app should stay open during a trip, since Android can pause GPS in the background. If the app is closed or
+        crashes, the trip is saved every 5 seconds and can be resumed; movement while it was closed counts as a straight
+        line.
+      </li>
       <li>
         Section 5 of the guideline lists ₱4 per succeeding km for discounted passengers at the base gas price, but its
         fare box shows ₱5. The group confirmed that ₱5 is charged, so TriMeter uses ₱5.
