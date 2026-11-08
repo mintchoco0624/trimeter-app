@@ -260,8 +260,8 @@
       kilometre adds the per-km rate, with a part of a km charged as a full km (<code>Math.ceil</code>). The distance is
       rounded to 10 m first, so GPS noise (e.g. 3.004 km) is not billed as an extra km. Students, seniors and PWDs use
       the discounted column. The rates follow the official Cabanatuan City Tricycle Fare Guidelines for City Ordinance
-      No. 050-2026 (dated April 14, 2026): ₱35 / ₱28 for the first 3 km and ₱5 / ₱4 per succeeding km, per passenger (at
-      most 3 per trip), with 11 gasoline-price bands up to ₱150–₱159.99/L.
+      No. 050-2026 (dated April 14, 2026): ₱35 / ₱28 for the first 3 km and ₱5 per succeeding km for all passengers, per
+      passenger (at most 3 per trip), with 11 gasoline-price bands up to ₱150–₱159.99/L.
     </p>
     <h3>Data handling</h3>
     <ul>
@@ -319,8 +319,8 @@
       </tr>
       <tr>
         <td>Driver, student passenger, same route</td>
-        <td>₱36; receipt shows ₱45 − ₱9 discount</td>
-        <td>₱36, as expected</td>
+        <td>₱38; receipt shows ₱45 − ₱7 discount</td>
+        <td>₱38, as expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
@@ -355,13 +355,13 @@
       </tr>
       <tr>
         <td>Calculator: 4.56 km student; invalid input</td>
-        <td>₱36; error message for 0 or text</td>
+        <td>₱38; error message for 0 or text</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
         <td>Fare data vs. city guideline (11 bands)</td>
-        <td>Every band matches Section 5</td>
+        <td>Every band matches the guideline</td>
         <td>As expected (unit test)</td>
         <td class="pass">Pass</td>
       </tr>
@@ -373,8 +373,8 @@
       </tr>
       <tr>
         <td>APK 1.1 on Android emulator (API 37): upgrade, log out, driver trip</td>
-        <td>Old trips kept; 4.5 km student trip ₱36</td>
-        <td>4.48 km, ₱36; 3 old trips kept</td>
+        <td>Old trips kept; student fare charged live</td>
+        <td>4.48 km, ₱36 at the earlier ₱4/km rate; 3 old trips kept</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
@@ -397,8 +397,8 @@
       </li>
       <li>The app must stay open during a trip; Android can pause GPS updates in the background.</li>
       <li>
-        The city guideline is inconsistent on one rate: its summary box shows +₱5 per succeeding km for discounted
-        passengers, but its Section 5 table shows ₱4. TriMeter follows the Section 5 table and says so in Fare Info.
+        Section 5 of the guideline lists ₱4 per succeeding km for discounted passengers at the base gas price, but its
+        fare box shows ₱5. The group confirmed that ₱5 is charged, so TriMeter uses ₱5.
       </li>
       <li>
         Roles and the profile are stored only on the phone: there is no real login, and discounts depend on the driver
@@ -412,7 +412,6 @@
         A foreground service so tracking continues with the screen off (<i>visibility of system status</i>,
         <i>error prevention</i>).
       </li>
-      <li>Ask the City Government to clarify the discounted per-km rate printed on the guideline (+₱5 or ₱4).</li>
       <li>A passenger counter (up to 3 per trip, as the guideline allows) to show the total fare for a group.</li>
       <li>
         A Filipino language option and a larger-text mode; some secondary labels are 11–12 px (<i

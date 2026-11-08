@@ -134,12 +134,12 @@ test('driver: picks the passenger per trip, and the record has no overcharge che
   await pushFix(page, ROUTE[0], Date.now());
   await page.getByTestId('start').click();
   await rideRoute(page);
-  // Student: 28 + 2 x 4
-  await expect(page.getByTestId('fare')).toHaveText('₱36');
+  // Student: 28 + 2 x 5
+  await expect(page.getByTestId('fare')).toHaveText('₱38');
 
   await page.getByTestId('end').click();
   await page.locator('ion-alert button', { hasText: 'End trip' }).click();
-  await expect(page.getByTestId('receipt-total')).toHaveText('₱36', { timeout: 20000 });
+  await expect(page.getByTestId('receipt-total')).toHaveText('₱38', { timeout: 20000 });
   await expect(page.getByText('Student discount')).toBeVisible();
   await expect(page.getByTestId('asked')).toHaveCount(0);
 });
@@ -190,5 +190,5 @@ test('fare info: official guideline data, city hotline, penalties and a working 
 
   await page.locator('[data-testid=calc-km] input').fill('4.56');
   await page.locator('app-fare-calculator ion-segment-button', { hasText: 'Student' }).click();
-  await expect(page.getByTestId('calc-total')).toHaveText('₱36');
+  await expect(page.getByTestId('calc-total')).toHaveText('₱38');
 });

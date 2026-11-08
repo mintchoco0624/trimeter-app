@@ -5,7 +5,8 @@ import { FareService } from './fare';
 
 /**
  * The bundled fare data must match the official Cabanatuan City Tricycle Fare Guidelines
- * (Ordinance No. 050-2026, dated April 14, 2026), Section 5 table. If the city changes the
+ * (Ordinance No. 050-2026, dated April 14, 2026): the fare box for the base band (₱5 per succeeding km for
+ * everyone) and the Section 5 table for the higher gas price bands. If the city changes the
  * fares, update assets/fare-matrix.json and these expected values together.
  */
 const matrix = guideline as unknown as FareMatrix;
@@ -13,7 +14,7 @@ const fare = new FareService();
 
 // [band id, regular base, discounted base, regular per km, discounted per km]
 const SECTION_5: [string, number, number, number, number][] = [
-  ['b50', 35, 28, 5, 4],
+  ['b50', 35, 28, 5, 5],
   ['b60', 37.5, 30, 5.5, 4.5],
   ['b70', 40, 32, 6, 5],
   ['b80', 42.5, 34, 6.5, 5],
@@ -38,11 +39,11 @@ describe('bundled fare matrix (official guideline)', () => {
     }
   });
 
-  it('uses the base band by default: ₱35 regular / ₱28 discounted for the first 3 km', () => {
+  it('uses the base band by default: ₱35 / ₱28 for the first 3 km, then +₱5 per km for everyone', () => {
     expect(matrix.defaultBandId).toBe('b50');
     expect(matrix.baseKm).toBe(3);
     expect(fare.compute(4.56, 'regular', matrix).total).toBe(45);
-    expect(fare.compute(4.56, 'student', matrix).total).toBe(36);
+    expect(fare.compute(4.56, 'student', matrix).total).toBe(38); // 28 + 2 × 5
   });
 
   it('records the ordinance, the guideline date, the city hotline and the passenger limit', () => {

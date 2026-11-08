@@ -6,7 +6,7 @@
   "effectiveDate": "2026-04-14",
   "effectiveNote": "Date printed on the official Cabanatuan City Tricycle Fare Guidelines (Petsa: April 14, 2026).",
   "status": "confirmed",
-  "statusNote": "Rates from the official Cabanatuan City Tricycle Fare Guidelines for Ordinance No. 050-2026. Fares are per passenger. The guideline’s summary box shows +₱5.00 per succeeding km for discounted passengers, but its Section 5 table shows ₱4.00 at the base gas price; TriMeter follows the Section 5 table.",
+  "statusNote": "Rates from the official Cabanatuan City Tricycle Fare Guidelines for Ordinance No. 050-2026. Fares are per passenger. Senior citizens, PWDs and students pay ₱28 for the first 3 km and the same +₱5.00 per succeeding km as regular passengers, as printed in the guideline’s fare box. The higher gas price bands follow the guideline’s Section 5 table.",
   "updatedAt": "2026-11-08",
   "baseKm": 3,
   "discountedTypes": [
@@ -17,7 +17,7 @@
   "maxPassengers": 3,
   "defaultBandId": "b50",
   "fuelBands": [
-    { "id": "b50", "label": "₱50.00 – ₱59.99 / L (base)", "minPrice": 50, "maxPrice": 59.99, "baseFare": {"regular": 35, "discounted": 28}, "perSucceedingKm": {"regular": 5, "discounted": 4} },
+    { "id": "b50", "label": "₱50.00 – ₱59.99 / L (base)", "minPrice": 50, "maxPrice": 59.99, "baseFare": {"regular": 35, "discounted": 28}, "perSucceedingKm": {"regular": 5, "discounted": 5} },
     { "id": "b60", "label": "₱60.00 – ₱69.99 / L", "minPrice": 60, "maxPrice": 69.99, "baseFare": {"regular": 37.5, "discounted": 30}, "perSucceedingKm": {"regular": 5.5, "discounted": 4.5} },
     { "id": "b70", "label": "₱70.00 – ₱79.99 / L", "minPrice": 70, "maxPrice": 79.99, "baseFare": {"regular": 40, "discounted": 32}, "perSucceedingKm": {"regular": 6, "discounted": 5} },
     { "id": "b80", "label": "₱80.00 – ₱89.99 / L", "minPrice": 80, "maxPrice": 89.99, "baseFare": {"regular": 42.5, "discounted": 34}, "perSucceedingKm": {"regular": 6.5, "discounted": 5} },

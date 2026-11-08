@@ -37,14 +37,14 @@ There is no server account: the profile and role are stored only on the phone, a
 `src/assets/fare-matrix.json` follows the official **Cabanatuan City Tricycle Fare Guidelines** for **City Ordinance No. 050-2026** (printed guideline dated April 14, 2026):
 
 - First 3 km: ₱35 regular, ₱28 for senior citizens, PWDs and students
-- Each succeeding km: +₱5 regular, +₱4 discounted (Section 5 table at the base gas price)
+- Each succeeding km: +₱5 for all passengers (only the first 3 km is discounted)
 - A part of a km (0.1 to 1 km) counts as a full km
 - Fares are per passenger; a tricycle may carry at most 3 passengers
 - Section 5 raises the fare in steps with the gasoline price, from ₱50.00–₱59.99/L up to ₱150.00–₱159.99/L (11 bands)
 - Complaints and suggestions: 0998-500-2726 (call or text), as printed on the guideline
 - Section 8 penalties: ₱500 or 1-day impounding, then ₱1,000 or 7-day impounding, then MTOP cancellation
 
-The guideline is inconsistent in one place: its summary box shows +₱5.00 per succeeding km for discounted passengers, while its Section 5 table shows ₱4.00 at the base gas price. TriMeter follows the Section 5 table and says so in Fare Info. A unit test (`services/fare-matrix-data.spec.ts`) checks every band against the guideline.
+Section 5 of the guideline lists ₱4 per succeeding km for discounted passengers at the base gas price, while its fare box shows ₱5. The group confirmed that ₱5 is charged, so TriMeter uses ₱5 for the base band; the higher gas price bands follow the Section 5 table. A unit test (`services/fare-matrix-data.spec.ts`) checks every band.
 
 The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
 
@@ -113,7 +113,6 @@ android/        Capacitor Android project
 
 - Phone GPS can drift near tall buildings or in bad weather.
 - The app must stay open during a trip, because Android can pause tracking in the background. The screen is kept awake with the Wake Lock API.
-- The guideline has one inconsistency (the discounted per-km rate); TriMeter follows its Section 5 table (see Fare data).
 - Roles and the profile are local only: there is no real login or ID verification. Discounts rely on the driver checking a valid ID.
 
 ## AI assistance
