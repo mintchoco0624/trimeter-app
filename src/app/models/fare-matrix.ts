@@ -19,7 +19,8 @@ export interface FuelBand {
 
 export interface FareSource {
   label: string;
-  url: string;
+  /** Missing for printed sources, such as the posted city guideline. */
+  url?: string;
 }
 
 /** The fare matrix as stored in assets/fare-matrix.json (and the same file on GitHub). */
@@ -40,11 +41,15 @@ export interface FareMatrix {
   /** Kilometres covered by the base (minimum) fare. */
   baseKm: number;
   discountedTypes: PassengerType[];
+  /** Most passengers allowed on one tricycle trip (fares are per passenger). */
+  maxPassengers?: number;
   /** Id of the band used when the user has not picked one. */
   defaultBandId: string;
   fuelBands: FuelBand[];
   /** A complaint hotline, shown only when it has been verified. Empty = not shown. */
   hotline?: string;
+  /** Penalties for drivers or operators who violate the ordinance, as printed on the guideline. */
+  penalties?: string[];
   sources: FareSource[];
 }
 

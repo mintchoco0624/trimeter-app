@@ -34,14 +34,19 @@ There is no server account: the profile and role are stored only on the phone, a
 
 ## Fare data
 
-`src/assets/fare-matrix.json` uses the figures for **City Ordinance No. 050-2026** as compiled by the community [BetterCabanatuan fare project](https://github.com/BetterCabanatuan/bettercabanatuan-fare):
+`src/assets/fare-matrix.json` follows the official **Cabanatuan City Tricycle Fare Guidelines** for **City Ordinance No. 050-2026** (printed guideline dated April 14, 2026):
 
-- First 3 km: ₱35 regular, ₱28 discounted
-- Each succeeding km: +₱5 regular, +₱4 discounted
-- Part of a km counts as a full km
-- Gasoline-price bands raise the fare in steps
+- First 3 km: ₱35 regular, ₱28 for senior citizens, PWDs and students
+- Each succeeding km: +₱5 regular, +₱4 discounted (Section 5 table at the base gas price)
+- A part of a km (0.1 to 1 km) counts as a full km
+- Fares are per passenger; a tricycle may carry at most 3 passengers
+- Section 5 raises the fare in steps with the gasoline price, from ₱50.00–₱59.99/L up to ₱150.00–₱159.99/L (11 bands)
+- Complaints and suggestions: 0998-500-2726 (call or text), as printed on the guideline
+- Section 8 penalties: ₱500 or 1-day impounding, then ₱1,000 or 7-day impounding, then MTOP cancellation
 
-These figures are **not yet verified** with the city, and the app labels them "Unconfirmed". A [Rappler fact check](https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/) (April 2026) reported that the matrix was still a draft and that the last official adjustment was in November 2018, so the effective date is shown as "Not confirmed" (`effectiveDate: null`). No complaint hotline is listed until an official number is verified (`hotline: ""`). The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
+The guideline is inconsistent in one place: its summary box shows +₱5.00 per succeeding km for discounted passengers, while its Section 5 table shows ₱4.00 at the base gas price. TriMeter follows the Section 5 table and says so in Fare Info. A unit test (`services/fare-matrix-data.spec.ts`) checks every band against the guideline.
+
+The app downloads this file from GitHub on start (`fareMatrixUrl` in `src/environments/environment*.ts`), so editing `src/assets/fare-matrix.json` on the `main` branch updates the fare in every installed app without a new APK. Offline, it uses the last saved copy, then the copy bundled in the APK.
 
 ## Setup (development)
 
@@ -58,7 +63,7 @@ In the browser, allow location access. Chrome DevTools > More tools > Sensors ca
 ### Tests
 
 ```bash
-npm run test:unit      # 73 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
+npm run test:unit      # 77 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
 npx ng serve --port 4200 &   # then, in another terminal:
 npm run test:e2e       # 8 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, online services mocked
 npm run lint
@@ -108,7 +113,7 @@ android/        Capacitor Android project
 
 - Phone GPS can drift near tall buildings or in bad weather.
 - The app must stay open during a trip, because Android can pause tracking in the background. The screen is kept awake with the Wake Lock API.
-- The fare matrix is unconfirmed (see Fare data).
+- The guideline has one inconsistency (the discounted per-km rate); TriMeter follows its Section 5 table (see Fare data).
 - Roles and the profile are local only: there is no real login or ID verification. Discounts rely on the driver checking a valid ID.
 
 ## AI assistance

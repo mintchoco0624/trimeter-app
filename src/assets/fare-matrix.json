@@ -1,19 +1,20 @@
 {
-  "version": "2026.11-sample-2",
+  "version": "050-2026 (guideline 2026-04-14)",
   "city": "Cabanatuan City, Nueva Ecija",
-  "ordinance": "City Ordinance No. 050-2026 (tricycle fare matrix)",
+  "ordinance": "City Ordinance No. 050-2026 (Cabanatuan City Tricycle Fare Guidelines)",
   "ordinanceNo": "050-2026",
-  "effectiveDate": null,
-  "effectiveNote": "Not confirmed. A Rappler fact check (April 2026) reported that this fare matrix was still a draft and not yet in force, and that the last official tricycle fare adjustment was in November 2018.",
-  "status": "unconfirmed",
-  "statusNote": "Figures taken from the community-compiled BetterCabanatuan fare data for Ordinance No. 050-2026. They have not been verified against the city’s certified copy, and the ordinance may not be in force yet. Verify with the Cabanatuan City Government before relying on them.",
-  "updatedAt": "2026-11-07",
+  "effectiveDate": "2026-04-14",
+  "effectiveNote": "Date printed on the official Cabanatuan City Tricycle Fare Guidelines (Petsa: April 14, 2026).",
+  "status": "confirmed",
+  "statusNote": "Rates from the official Cabanatuan City Tricycle Fare Guidelines for Ordinance No. 050-2026. Fares are per passenger. The guideline’s summary box shows +₱5.00 per succeeding km for discounted passengers, but its Section 5 table shows ₱4.00 at the base gas price; TriMeter follows the Section 5 table.",
+  "updatedAt": "2026-11-08",
   "baseKm": 3,
   "discountedTypes": [
     "student",
     "senior",
     "pwd"
   ],
+  "maxPassengers": 3,
   "defaultBandId": "b50",
   "fuelBands": [
     { "id": "b50", "label": "₱50.00 – ₱59.99 / L (base)", "minPrice": 50, "maxPrice": 59.99, "baseFare": {"regular": 35, "discounted": 28}, "perSucceedingKm": {"regular": 5, "discounted": 4} },
@@ -22,17 +23,25 @@
     { "id": "b80", "label": "₱80.00 – ₱89.99 / L", "minPrice": 80, "maxPrice": 89.99, "baseFare": {"regular": 42.5, "discounted": 34}, "perSucceedingKm": {"regular": 6.5, "discounted": 5} },
     { "id": "b90", "label": "₱90.00 – ₱99.99 / L", "minPrice": 90, "maxPrice": 99.99, "baseFare": {"regular": 45, "discounted": 36}, "perSucceedingKm": {"regular": 7, "discounted": 5.5} },
     { "id": "b100", "label": "₱100.00 – ₱109.99 / L", "minPrice": 100, "maxPrice": 109.99, "baseFare": {"regular": 47.5, "discounted": 38}, "perSucceedingKm": {"regular": 7.5, "discounted": 6} },
-    { "id": "b110", "label": "₱110.00 – ₱119.99 / L", "minPrice": 110, "maxPrice": 119.99, "baseFare": {"regular": 50, "discounted": 40}, "perSucceedingKm": {"regular": 8, "discounted": 6.5} }
+    { "id": "b110", "label": "₱110.00 – ₱119.99 / L", "minPrice": 110, "maxPrice": 119.99, "baseFare": {"regular": 50, "discounted": 40}, "perSucceedingKm": {"regular": 8, "discounted": 6.5} },
+    { "id": "b120", "label": "₱120.00 – ₱129.99 / L", "minPrice": 120, "maxPrice": 129.99, "baseFare": {"regular": 52.5, "discounted": 42}, "perSucceedingKm": {"regular": 8.5, "discounted": 7} },
+    { "id": "b130", "label": "₱130.00 – ₱139.99 / L", "minPrice": 130, "maxPrice": 139.99, "baseFare": {"regular": 55, "discounted": 44}, "perSucceedingKm": {"regular": 9, "discounted": 7} },
+    { "id": "b140", "label": "₱140.00 – ₱149.99 / L", "minPrice": 140, "maxPrice": 149.99, "baseFare": {"regular": 57.5, "discounted": 46}, "perSucceedingKm": {"regular": 9.5, "discounted": 7.5} },
+    { "id": "b150", "label": "₱150.00 – ₱159.99 / L", "minPrice": 150, "maxPrice": 159.99, "baseFare": {"regular": 60, "discounted": 48}, "perSucceedingKm": {"regular": 10, "discounted": 8} }
   ],
-  "hotline": "",
+  "hotline": "0998-500-2726",
+  "penalties": [
+    "1st violation: ₱500 fine or impounding of the unit for 1 day",
+    "2nd violation: ₱1,000 fine or impounding of the unit for 7 days",
+    "3rd violation: cancellation and revocation of the Motorized Tricycle Operator’s Permit (MTOP)"
+  ],
   "sources": [
     {
-      "label": "BetterCabanatuan fare data (community-compiled, unconfirmed)",
-      "url": "https://github.com/BetterCabanatuan/bettercabanatuan-fare"
+      "label": "Cabanatuan City Tricycle Fare Guidelines, Ordinance No. 050-2026 (printed guideline dated April 14, 2026)"
     },
     {
-      "label": "Rappler fact check on the new Cabanatuan fare matrix",
-      "url": "https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/"
+      "label": "BetterCabanatuan fare data (community copy of the same ordinance)",
+      "url": "https://github.com/BetterCabanatuan/bettercabanatuan-fare"
     }
   ]
 }

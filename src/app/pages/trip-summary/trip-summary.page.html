@@ -93,7 +93,8 @@
         <div>
           <strong>Overcharged by {{ c.amount | peso }} ({{ c.percent }}%).</strong>
           <p>
-            Show this receipt to the driver. To report it, see
+            Show this receipt to the driver. @if (hotline()) { You can report it by calling or texting {{ hotline() }}.
+            } See
             <a [routerLink]="['/tabs/fare-info']" fragment="complaint">Fare complaint assistance</a>.
           </p>
         </div>

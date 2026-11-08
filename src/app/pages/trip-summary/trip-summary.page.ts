@@ -24,6 +24,7 @@ import { STATUS_LABELS, type Trip, tripStatus } from '../../models/trip';
 import { DurationPipe, formatDuration } from '../../pipes/duration-pipe';
 import { PesoPipe, formatPeso } from '../../pipes/peso-pipe';
 import { FareService } from '../../services/fare';
+import { FareMatrixService } from '../../services/fare-matrix';
 import { FeedbackService } from '../../services/feedback';
 import { TripStorageService } from '../../services/trip-storage';
 
@@ -57,6 +58,9 @@ export class TripSummaryPage {
   private fareService = inject(FareService);
   private feedback = inject(FeedbackService);
   private router = inject(Router);
+  private matrixService = inject(FareMatrixService);
+  /** City complaint number from the fare guideline (empty if none is listed). */
+  readonly hotline = computed(() => this.matrixService.matrix()?.hotline ?? '');
 
   /** From the route /trip/:id (withComponentInputBinding). */
   readonly id = input.required<string>();

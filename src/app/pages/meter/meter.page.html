@@ -97,6 +97,8 @@
       <span class="tm-muted head-note">{{ onTrip() ? labels[passenger()] + ' passenger' : 'Who is riding?' }}</span>
       } @else if (matrix()?.status === 'unconfirmed') {
       <span class="tm-muted head-note">Unconfirmed fare data</span>
+      } @else {
+      <span class="tm-muted head-note">Fare per passenger</span>
       }
     </div>
 

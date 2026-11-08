@@ -77,3 +77,8 @@ Thumbs.db
 
 # Built APK (submit it separately, not in the repo)
 /TriMeter.apk
+
+# Claude Code skills installed locally (not part of the app)
+/.claude/
+/.agents/
+/skills-lock.json

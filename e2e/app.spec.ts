@@ -178,13 +178,15 @@ test('jitter while standing still does not add distance', async ({ page }) => {
   await expect(page.getByTestId('distance')).toHaveText(/0\.00/);
 });
 
-test('fare info: unconfirmed data, no unverified hotline, and a working calculator', async ({ page }) => {
+test('fare info: official guideline data, city hotline, penalties and a working calculator', async ({ page }) => {
   await finishOnboarding(page, 'commuter');
   await page.goto('/tabs/fare-info');
 
-  await expect(page.getByTestId('matrix-status')).toHaveText(/Unconfirmed/);
-  await expect(page.getByTestId('effective-date')).toHaveText(/Not confirmed/);
-  await expect(page.getByTestId('no-hotline')).toBeVisible();
+  await expect(page.getByTestId('matrix-status')).toHaveText(/Confirmed/);
+  await expect(page.getByTestId('effective-date')).toHaveText(/April 14, 2026/);
+  await expect(page.getByTestId('per-passenger')).toContainText('at most 3 passengers');
+  await expect(page.getByTestId('hotline')).toContainText('0998-500-2726');
+  await expect(page.getByTestId('penalties').locator('li')).toHaveCount(3);
 
   await page.locator('[data-testid=calc-km] input').fill('4.56');
   await page.locator('app-fare-calculator ion-segment-button', { hasText: 'Student' }).click();

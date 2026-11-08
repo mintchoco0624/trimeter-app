@@ -259,8 +259,9 @@
       <code>services/fare.ts</code> is a pure function. The base fare covers the first 3 km, and each succeeding
       kilometre adds the per-km rate, with a part of a km charged as a full km (<code>Math.ceil</code>). The distance is
       rounded to 10 m first, so GPS noise (e.g. 3.004 km) is not billed as an extra km. Students, seniors and PWDs use
-      the discounted column. Bundled rates follow City Ordinance No. 050-2026 as compiled by the community
-      BetterCabanatuan project: ₱35 / ₱28 for the first 3 km and ₱5 / ₱4 per succeeding km, with gasoline-price bands.
+      the discounted column. The rates follow the official Cabanatuan City Tricycle Fare Guidelines for City Ordinance
+      No. 050-2026 (dated April 14, 2026): ₱35 / ₱28 for the first 3 km and ₱5 / ₱4 per succeeding km, per passenger (at
+      most 3 per trip), with 11 gasoline-price bands up to ₱150–₱159.99/L.
     </p>
     <h3>Data handling</h3>
     <ul>
@@ -291,10 +292,11 @@
 
     <h2>5. Testing and Evaluation</h2>
     <p>
-      Automated tests: <b>73 unit tests</b> (Vitest) for the fare rules, receipt breakdown, GPS filter, history search,
-      calculator validation, settings, roles and pages, and <b>8 end-to-end tests</b> (Playwright, Chrome). The
-      end-to-end tests replay a real 4.56 km road route (NE Pacific Mall → NEUST, from OSRM) as GPS fixes, with the
-      online services mocked so results are repeatable. All automated tests pass, and <code>ng lint</code> is clean.
+      Automated tests: <b>77 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
+      receipt breakdown, GPS filter, history search, calculator validation, settings, roles and pages, and
+      <b>8 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
+      Mall → NEUST, from OSRM) as GPS fixes, with the online services mocked so results are repeatable. All automated
+      tests pass, and <code>ng lint</code> is clean.
     </p>
     <table>
       <tr>
@@ -358,6 +360,12 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
+        <td>Fare data vs. city guideline (11 bands)</td>
+        <td>Every band matches Section 5</td>
+        <td>As expected (unit test)</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
         <td>Offline place search / road distance</td>
         <td>Clear message; straight-line fallback</td>
         <td>As expected (unit test)</td>
@@ -389,9 +397,8 @@
       </li>
       <li>The app must stay open during a trip; Android can pause GPS updates in the background.</li>
       <li>
-        The fare matrix is a community copy of Ordinance No. 050-2026. A Rappler fact check (April 2026) reported it was
-        still a draft, so the app labels it “Unconfirmed” and shows the effective date as “Not confirmed”. An unverified
-        complaint hotline was removed.
+        The city guideline is inconsistent on one rate: its summary box shows +₱5 per succeeding km for discounted
+        passengers, but its Section 5 table shows ₱4. TriMeter follows the Section 5 table and says so in Fare Info.
       </li>
       <li>
         Roles and the profile are stored only on the phone: there is no real login, and discounts depend on the driver
@@ -405,7 +412,8 @@
         A foreground service so tracking continues with the screen off (<i>visibility of system status</i>,
         <i>error prevention</i>).
       </li>
-      <li>Verify the fare matrix and a complaint hotline with the Cabanatuan City Government.</li>
+      <li>Ask the City Government to clarify the discounted per-km rate printed on the guideline (+₱5 or ₱4).</li>
+      <li>A passenger counter (up to 3 per trip, as the guideline allows) to show the total fare for a group.</li>
       <li>
         A Filipino language option and a larger-text mode; some secondary labels are 11–12 px (<i
           >match with the real world</i
@@ -435,12 +443,12 @@
     <h2>References</h2>
     <ul class="refs">
       <li>
-        BetterCabanatuan. <i>bettercabanatuan-fare</i> (community fare data, Ordinance No. 050-2026).
+        BetterCabanatuan. <i>bettercabanatuan-fare</i> (community copy of Ordinance No. 050-2026).
         https://github.com/BetterCabanatuan/bettercabanatuan-fare
       </li>
       <li>
-        Rappler (2026). Fact check: New Cabanatuan City fare matrix still a draft, ordinance not yet in force.
-        https://www.rappler.com/newsbreak/fact-check/new-cabanatuan-city-fare-matrix-ordinance-draft-not-yet-in-force/
+        City Government of Cabanatuan (2026). <i>Cabanatuan City Tricycle Fare Guidelines</i>, Ordinansa Blg. 050-2026
+        (printed guideline, April 14, 2026).
       </li>
       <li>
         ResearchPublish (2016). Cabanatuan City: Tricycle Capital of the Philippines.

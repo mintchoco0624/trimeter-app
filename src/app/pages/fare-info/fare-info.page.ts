@@ -20,7 +20,15 @@ import {
   IonToolbar,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { call, cloudDownload, cloudOffline, helpCircle, informationCircle, openOutline } from 'ionicons/icons';
+import {
+  call,
+  chatbubble,
+  cloudDownload,
+  cloudOffline,
+  helpCircle,
+  informationCircle,
+  openOutline,
+} from 'ionicons/icons';
 
 import { FareCalculatorComponent } from '../../components/fare-calculator/fare-calculator.component';
 import { PASSENGER_LABELS, type PassengerType } from '../../models/fare-matrix';
@@ -40,7 +48,7 @@ interface Faq {
 export const FAQS: Faq[] = [
   {
     q: 'How is the fare computed?',
-    a: 'The base fare covers the first 3 km. Every succeeding kilometre adds the per-km rate, and a part of a kilometre counts as a full kilometre (3.2 km is charged as 4 km). The rates come from the fare matrix shown above.',
+    a: 'The base fare covers the first 3 km. Every succeeding kilometre adds the per-km rate, and a part of a kilometre counts as a full kilometre (3.2 km is charged as 4 km). Fares are per passenger, and the rates come from the city fare guideline shown above.',
   },
   {
     q: 'How does GPS measure the distance?',
@@ -64,7 +72,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'How can I report a fare discrepancy?',
-    a: 'Open the trip receipt, type what the driver asked, and TriMeter shows the difference. Share or save the receipt, note the tricycle’s body number and TODA, and follow the steps under “Fare complaint assistance” below.',
+    a: 'Open the trip receipt, type what the driver asked, and TriMeter shows the difference. Share or save the receipt, note the tricycle’s body number and TODA, and follow the steps under “Fare complaint assistance” below, which include the city’s complaint number.',
   },
   {
     q: 'How are my personal information and trips stored?',
@@ -147,7 +155,7 @@ export class FareInfoPage {
   });
 
   constructor() {
-    addIcons({ cloudDownload, cloudOffline, helpCircle, informationCircle, call, openOutline });
+    addIcons({ cloudDownload, cloudOffline, helpCircle, informationCircle, call, chatbubble, openOutline });
   }
 
   /** Opened from Account with #faq or #complaint: scroll to that section. */

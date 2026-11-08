@@ -148,3 +148,33 @@ ion-segment-button {
   font-size: 14px;
   line-height: 1.45;
 }
+
+.note {
+  background: #e7f6ee;
+  color: #13663a;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sub-head {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 16px 0 6px;
+}
+
+.penalties {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  display: grid;
+  gap: 4px;
+}

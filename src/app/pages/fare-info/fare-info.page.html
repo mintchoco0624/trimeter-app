@@ -49,7 +49,7 @@
           <dd>{{ m.ordinanceNo || 'Not stated' }}</dd>
         </div>
         <div>
-          <dt>Effective date</dt>
+          <dt>Guideline date</dt>
           <dd data-testid="effective-date">
             @if (m.effectiveDate) { {{ m.effectiveDate | date: 'MMMM d, y' }} } @else {
             <span class="not-confirmed">Not confirmed</span> }
@@ -60,7 +60,7 @@
           <dd>{{ m.sources[0]?.label ?? 'Not stated' }}</dd>
         </div>
       </dl>
-      @if (!m.effectiveDate && m.effectiveNote) {
+      @if (m.effectiveNote) {
       <p class="tm-muted small">{{ m.effectiveNote }}</p>
       } @if (band(); as b) {
       <table class="matrix" aria-label="Fare rates">
@@ -84,6 +84,10 @@
           </tr>
         </tbody>
       </table>
+      <p class="tm-muted small" data-testid="per-passenger">
+        Fares are per passenger. @if (m.maxPassengers) { A tricycle may carry at most {{ m.maxPassengers }} passengers
+        per trip. }
+      </p>
       }
 
       <ion-item lines="none" class="band">
@@ -100,8 +104,8 @@
         </ion-select>
       </ion-item>
       <p class="tm-muted small">
-        The fare data has steps for gasoline pump prices. Pick the band that matches today’s price; the first band is
-        the base fare.
+        The guideline raises fares in steps when the pump price of gasoline goes up. Pick the band that matches today’s
+        price; the first band is the base fare.
       </p>
     </section>
 
@@ -142,12 +146,14 @@
     <!-- 5. Fare source and verification status -->
     <section class="tm-card" id="source">
       <h2>Fare source and verification</h2>
-      @if (m.status !== 'confirmed') {
-      <p class="warn">{{ m.statusNote }}</p>
-      }
+      <p [class]="m.status === 'confirmed' ? 'note' : 'warn'">{{ m.statusNote }}</p>
       <ul class="sources">
-        @for (s of m.sources; track s.url) {
-        <li><a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a></li>
+        @for (s of m.sources; track s.label) {
+        <li>
+          @if (s.url) {
+          <a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a>
+          } @else { {{ s.label }} }
+        </li>
         }
       </ul>
       <p class="tm-muted small">
@@ -193,13 +199,28 @@
         <li>Compare the fare on your TriMeter receipt with what the driver asked. Stay calm and show the receipt.</li>
         <li>Note the tricycle’s body number or plate number, its TODA, and the date, time and route of the trip.</li>
         <li>Save or share the receipt. It shows the distance, the fare breakdown and the fare data version used.</li>
-        <li>Report the case to the Cabanatuan City Government (City Hall), which regulates tricycle franchises.</li>
+        <li>
+          Report it to the Cabanatuan City Government. @if (m.hotline) { The guideline lists {{ m.hotline }} for
+          suggestions and complaints (call or text). }
+        </li>
       </ol>
       @if (m.hotline) {
-      <ion-button expand="block" fill="outline" color="danger" [href]="'tel:' + m.hotline">
-        <ion-icon slot="start" name="call"></ion-icon> Call {{ m.hotline }}
-      </ion-button>
-      } @else {
+      <div class="contact" data-testid="hotline">
+        <ion-button fill="outline" color="danger" [href]="'tel:' + m.hotline">
+          <ion-icon slot="start" name="call"></ion-icon> Call {{ m.hotline }}
+        </ion-button>
+        <ion-button fill="outline" color="danger" [href]="'sms:' + m.hotline">
+          <ion-icon slot="start" name="chatbubble"></ion-icon> Text
+        </ion-button>
+      </div>
+      } @if (m.penalties?.length) {
+      <h3 class="sub-head">Penalties for violating drivers or operators</h3>
+      <ul class="penalties" data-testid="penalties">
+        @for (p of m.penalties; track p) {
+        <li>{{ p }}</li>
+        }
+      </ul>
+      } @if (!m.hotline) {
       <p class="tm-muted small" data-testid="no-hotline">
         A complaint hotline is not listed because no official number has been verified yet.
       </p>
