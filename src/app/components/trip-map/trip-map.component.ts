@@ -30,6 +30,8 @@ export class TripMapComponent implements OnDestroy {
   readonly follow = input(false);
   /** Zoom to show the whole route whenever it changes. */
   readonly fitRoute = input(false);
+  /** Space (px) kept free above and below a fitted route, e.g. for a search bar and a bottom panel. */
+  readonly fitPadding = input<{ top: number; bottom: number }>({ top: 40, bottom: 40 });
   /** Where the OpenStreetMap credit goes; move it when a panel covers the bottom of the map. */
   readonly attributionPosition = input<L.ControlPosition>('bottomright');
   /** False when the page shows the OpenStreetMap credit itself (e.g. in a bottom panel that covers the map). */
@@ -56,7 +58,12 @@ export class TripMapComponent implements OnDestroy {
       const route = this.route();
       this.line!.setLatLngs(route.map((p) => [p.lat, p.lng]));
       if (this.fitRoute() && route.length > 1) {
-        this.map.fitBounds(this.line!.getBounds(), { padding: [40, 40], maxZoom: 17 });
+        const pad = this.fitPadding();
+        this.map.fitBounds(this.line!.getBounds(), {
+          paddingTopLeft: [40, pad.top],
+          paddingBottomRight: [40, pad.bottom],
+          maxZoom: 17,
+        });
       }
     });
 
@@ -132,8 +139,8 @@ export class TripMapComponent implements OnDestroy {
     const icon = L.divIcon({
       className: `tm-marker tm-marker--${kind}`,
       html: `<span>${text}</span>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
     });
     return L.marker([pos.lat, pos.lng], { icon, keyboard: false }).addTo(this.map!);
   }

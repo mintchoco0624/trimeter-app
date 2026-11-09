@@ -16,7 +16,7 @@ TriMeter measures the real distance of a tricycle ride with the phone's GPS and 
 | Driver: passenger type chosen per trip; History becomes “Trips” records | `src/app/pages/meter/meter.page.ts`, `src/app/pages/tabs/tabs.page.ts` |
 | Trip rules: confirm before ending, no saving under 50 m, double-tap protection, save retry, Manual mode fallback when GPS fails | `src/app/pages/meter/meter.page.ts` |
 | Resume an interrupted trip: the trip in progress is saved every 5 s; after a crash or restart the Meter offers Resume or Discard | `src/app/services/trip-recovery.ts`, `src/app/services/location.ts` |
-| Manual estimate (backup mode): search or tap A and B, OSRM road distance | `src/app/pages/estimate/estimate.page.ts` |
+| Manual estimate (backup mode): starts from your current location, so you only search or tap the drop-off; OSRM road distance | `src/app/pages/estimate/estimate.page.ts` |
 | Trip receipt: regular fare, discount and final fare, overcharge check (commuters), share | `src/app/pages/trip-summary/`, `src/app/components/fare-breakdown/` |
 | History: search by place, date filter, sorting, totals, swipe to delete | `src/app/pages/history/`, `src/app/services/trip-query.ts` |
 | Fare info: fare matrix (ordinance no., effective date, source, status), fare calculator, examples, 8 FAQs, complaint steps | `src/app/pages/fare-info/`, `src/app/components/fare-calculator/` |
@@ -66,7 +66,7 @@ In the browser, allow location access. Chrome DevTools > More tools > Sensors ca
 ```bash
 npm run test:unit      # 83 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
 npx ng serve --port 4200 &   # then, in another terminal:
-npm run test:e2e       # 9 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, resuming a trip after a restart, online services mocked
+npm run test:e2e       # 10 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, manual estimate from your location, resuming a trip after a restart, online services mocked
 npm run lint
 ```
 

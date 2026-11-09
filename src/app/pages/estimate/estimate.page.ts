@@ -17,6 +17,7 @@ import { locate, refresh, save, swapVertical } from 'ionicons/icons';
 
 import { PlaceSearchComponent } from '../../components/place-search/place-search.component';
 import { TripMapComponent } from '../../components/trip-map/trip-map.component';
+import { PASSENGER_LABELS } from '../../models/fare-matrix';
 import type { LatLng, Place, Trip } from '../../models/trip';
 import { PesoPipe } from '../../pipes/peso-pipe';
 import { FareService } from '../../services/fare';
@@ -69,6 +70,11 @@ export class EstimatePage {
   readonly to = signal<Place | null>(null);
   readonly result = signal<RouteResult | null>(null);
   readonly busy = signal(false);
+  /** True while the pick-up is being set to the user's current position. */
+  readonly locating = signal(false);
+  /** True when the pick-up (A) is the user's own GPS position. */
+  readonly fromIsMine = signal(false);
+  readonly passengerLabel = computed(() => PASSENGER_LABELS[this.settings.passengerType()]);
 
   readonly path = computed<LatLng[]>(() => this.result()?.path ?? []);
   readonly breakdown = computed(() => {
@@ -78,8 +84,9 @@ export class EstimatePage {
     return this.fare.compute(r.distanceKm, this.settings.passengerType(), m, this.settings.fuelBandId());
   });
   readonly instruction = computed(() => {
-    if (!this.from()) return 'Tap the map to set A (pick-up), or use your location.';
-    if (!this.to()) return 'Now tap the map or search to set B (drop-off).';
+    if (this.locating()) return 'Finding your location for the pick-up (A)…';
+    if (!this.from()) return 'Search or tap the map to set the pick-up (A), or tap “My location”.';
+    if (!this.to()) return 'Search or tap the map to set the drop-off (B).';
     return '';
   });
 
@@ -87,11 +94,17 @@ export class EstimatePage {
     addIcons({ locate, refresh, save, swapVertical });
   }
 
-  /** Map tap: first tap sets A, second sets B, a third starts over with a new A. */
+  /** Ionic lifecycle: start from where the user is, so only the drop-off is left to choose. */
+  async ionViewDidEnter(): Promise<void> {
+    if (this.from() || !(await this.location.isGranted())) return;
+    await this.setPickupToMe(false);
+  }
+
+  /** Map tap: sets A if it is empty, otherwise places (or moves) the drop-off B. */
   async onMapClick(point: LatLng): Promise<void> {
-    if (this.from() && this.to()) this.reset();
     const place = { ...point, label: 'Loading place name…' };
     if (!this.from()) {
+      this.fromIsMine.set(false);
       this.from.set(place);
       this.from.set(await this.geocode.reverse(point));
     } else {
@@ -103,35 +116,55 @@ export class EstimatePage {
 
   async useMyLocation(): Promise<void> {
     if (!(await this.location.isGranted()) && !(await this.feedback.explainLocation())) return;
+    await this.setPickupToMe(true);
+  }
+
+  /** Sets the pick-up (A) to the current GPS position. Errors are shown only when the user asked. */
+  private async setPickupToMe(userAsked: boolean): Promise<void> {
+    this.locating.set(true);
     try {
       await this.location.ensurePermission();
       const here = await this.location.getCurrent();
-      this.from.set(await this.geocode.reverse(here));
+      this.from.set({ ...here, label: 'Your location' });
+      this.fromIsMine.set(true);
       this.map()?.centerOn(here, 15);
+      this.from.set(await this.geocode.reverse(here));
       if (this.to()) await this.compute();
     } catch {
-      await this.feedback.error('Could not get your location. Tap the map to set the pick-up point instead.');
+      if (userAsked) {
+        await this.feedback.error('Could not get your location. Tap the map to set the pick-up point instead.');
+      }
+    } finally {
+      this.locating.set(false);
     }
   }
 
   async pickResult(place: Place): Promise<void> {
-    if (!this.from()) this.from.set(place);
-    else this.to.set(place);
+    if (!this.from()) {
+      this.fromIsMine.set(false);
+      this.from.set(place);
+    } else this.to.set(place);
     this.map()?.centerOn(place, 15);
     if (this.from() && this.to()) await this.compute();
   }
 
   async swap(): Promise<void> {
     const a = this.from();
+    this.fromIsMine.set(false);
     this.from.set(this.to());
     this.to.set(a);
     if (this.from() && this.to()) await this.compute();
   }
 
+  /** Start over: clear both points, then use the current location as the pick-up again (if allowed). */
   reset(): void {
     this.from.set(null);
     this.to.set(null);
     this.result.set(null);
+    this.fromIsMine.set(false);
+    void this.location.isGranted().then((granted) => {
+      if (granted && !this.from()) void this.setPickupToMe(false);
+    });
   }
 
   async saveTrip(): Promise<void> {

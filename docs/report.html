@@ -213,8 +213,8 @@
         overcharge in pesos and percent. The receipt can be shared.
       </li>
       <li>
-        <b>Manual estimate (backup mode):</b> pick A and B by search or on the map to get the road distance and fare.
-        The app offers it whenever GPS is unavailable.
+        <b>Manual estimate (backup mode):</b> pick-up starts at your current location, so you only search or tap the
+        drop-off to get the road distance and fare. The app offers it whenever GPS is unavailable.
       </li>
       <li>
         <b>History:</b> trip cards with date, places, distance, duration, passenger type, regular fare, discount, final
@@ -296,7 +296,7 @@
     <p>
       Automated tests: <b>83 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
       receipt breakdown, GPS filter, history search, calculator validation, settings, roles and pages, and
-      <b>9 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
+      <b>10 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
       Mall → NEUST, from OSRM) as GPS fixes, with the online services mocked so results are repeatable. All automated
       tests pass, and <code>ng lint</code> is clean.
     </p>

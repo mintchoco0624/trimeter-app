@@ -1,6 +1,8 @@
-<ion-content [fullscreen]="true" class="onboarding">
+<ion-content [fullscreen]="true" [scrollY]="false" class="onboarding">
   <div class="blob blob--top" aria-hidden="true"></div>
+  @if (step() === 'welcome') {
   <div class="blob blob--bottom" aria-hidden="true"></div>
+  }
 
   <main class="wrap">
     @switch (step()) { @case ('welcome') {

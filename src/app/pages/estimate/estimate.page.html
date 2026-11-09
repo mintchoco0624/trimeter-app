@@ -14,6 +14,7 @@
     [from]="from()"
     [to]="to()"
     [fitRoute]="true"
+    [fitPadding]="{ top: 100, bottom: 420 }"
     [showAttribution]="false"
     (mapClick)="onMapClick($event)"
   ></app-trip-map>
@@ -27,27 +28,42 @@
 
   <section class="sheet">
     <div class="points">
-      <div class="point">
-        <span class="pin pin--a">A</span><span class="label">{{ from()?.label ?? 'Pick-up not set' }}</span>
+      <div class="point" data-testid="pickup">
+        <span class="pin pin--a" aria-hidden="true">A</span>
+        <div class="point-text">
+          <span class="tm-label"
+            >Pick-up @if (fromIsMine()) {<span class="mine"><ion-icon name="locate"></ion-icon> Your location</span
+            >}</span
+          >
+          <span class="label">
+            @if (locating() && !from()) { Finding your location… } @else { {{ from()?.label ?? 'Not set' }} }
+          </span>
+        </div>
       </div>
-      <div class="point">
-        <span class="pin pin--b">B</span><span class="label">{{ to()?.label ?? 'Drop-off not set' }}</span>
-      </div>
-      <div class="point-actions">
-        <ion-button size="small" fill="clear" (click)="useMyLocation()" aria-label="Use my location as pick-up">
-          <ion-icon slot="icon-only" name="locate"></ion-icon>
-        </ion-button>
-        <ion-button size="small" fill="clear" (click)="swap()" [disabled]="!from() || !to()" aria-label="Swap A and B">
-          <ion-icon slot="icon-only" name="swap-vertical"></ion-icon>
-        </ion-button>
-        <ion-button size="small" fill="clear" (click)="reset()" aria-label="Start over">
-          <ion-icon slot="icon-only" name="refresh"></ion-icon>
-        </ion-button>
+      <div class="connector" aria-hidden="true"></div>
+      <div class="point" data-testid="dropoff">
+        <span class="pin pin--b" aria-hidden="true">B</span>
+        <div class="point-text">
+          <span class="tm-label">Drop-off</span>
+          <span class="label">{{ to()?.label ?? 'Not set' }}</span>
+        </div>
       </div>
     </div>
 
+    <div class="actions">
+      <ion-button fill="outline" size="small" (click)="useMyLocation()" [disabled]="locating()">
+        <ion-icon slot="start" name="locate"></ion-icon> My location
+      </ion-button>
+      <ion-button fill="outline" size="small" (click)="swap()" [disabled]="!from() || !to()">
+        <ion-icon slot="start" name="swap-vertical"></ion-icon> Swap
+      </ion-button>
+      <ion-button fill="outline" size="small" (click)="reset()">
+        <ion-icon slot="start" name="refresh"></ion-icon> Start over
+      </ion-button>
+    </div>
+
     @if (instruction()) {
-    <p class="instruction">{{ instruction() }}</p>
+    <p class="instruction" data-testid="estimate-instruction">{{ instruction() }}</p>
     } @if (busy()) {
     <div class="calc"><ion-spinner name="crescent"></ion-spinner> Getting road distance…</div>
     } @else if (result() && breakdown(); as b) {
@@ -63,7 +79,10 @@
       <div class="tile tile--fare">
         <span class="tm-label">Expected fare</span>
         <span class="big tm-peso" data-testid="estimate-fare">{{ b.total | peso }}</span>
-        <span class="sub">{{ b.baseFare | peso }} + {{ b.succeedingKm }} km × {{ b.succeedingRate | peso }}</span>
+        <span class="sub" data-testid="estimate-passenger"
+          >{{ passengerLabel() }} · {{ b.baseFare | peso }} + {{ b.succeedingKm }} km × {{ b.succeedingRate | peso
+          }}</span
+        >
       </div>
     </div>
     <ion-button expand="block" shape="round" class="cta" (click)="saveTrip()" data-testid="save-estimate">

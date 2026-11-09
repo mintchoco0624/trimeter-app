@@ -24,34 +24,49 @@
 }
 
 .points {
-  position: relative;
   display: grid;
-  gap: 8px;
-  padding-right: 44px;
 }
 .point {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  min-width: 0;
+}
+.point-text {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 .label {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.mine {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e5eafa;
+  color: var(--tm-navy);
+  letter-spacing: 0;
+  text-transform: none;
+}
 .pin {
   flex: none;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   color: #fff;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(27, 42, 92, 0.25);
 }
 .pin--a {
   background: var(--ion-color-success);
@@ -59,16 +74,28 @@
 .pin--b {
   background: var(--ion-color-danger);
 }
-.point-actions {
-  position: absolute;
-  right: -8px;
-  top: -10px;
-  display: flex;
-  flex-direction: column;
+/* Dotted line linking A to B, like a route. */
+.connector {
+  width: 0;
+  height: 14px;
+  margin: 2px 0 2px 15px;
+  border-left: 2px dotted #b9c1dc;
 }
-.point-actions ion-button {
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.actions ion-button {
   margin: 0;
-  height: 26px;
+  min-height: 40px;
+  --border-radius: 12px;
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: 13px;
 }
 
 .instruction {

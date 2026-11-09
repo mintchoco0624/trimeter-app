@@ -23,16 +23,19 @@ h2,
   right: -50px;
 }
 .blob--bottom {
-  width: 240px;
-  height: 240px;
-  bottom: -110px;
-  left: -90px;
+  /* Kept above the Back / Next bar so it never sits behind the buttons or the step dots. */
+  width: 180px;
+  height: 180px;
+  bottom: 96px;
+  left: -100px;
   opacity: 0.9;
 }
 
 .wrap {
   position: relative;
-  min-height: 100%;
+  /* Exactly one screen tall (padding included), so the page never scrolls or leaves empty space below. */
+  height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding: calc(var(--ion-safe-area-top, 0px) + 32px) 24px calc(var(--ion-safe-area-bottom, 0px) + 24px);
@@ -40,9 +43,12 @@ h2,
 
 .slide {
   flex: 1;
+  min-height: 0;
+  /* A long step scrolls inside its own area; the Back / Next bar stays put. */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: safe center;
   gap: 12px;
 }
 .slide.center {

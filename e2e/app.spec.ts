@@ -123,6 +123,22 @@ test('commuter: choosing a destination shows the road distance and fare before t
   await expect(page.getByTestId('estimate-preview')).toHaveText('₱45');
 });
 
+test('manual estimate starts from your location, so only the drop-off is needed', async ({ page }) => {
+  await finishOnboarding(page, 'commuter');
+  await pushFix(page, ROUTE[0], Date.now());
+  await page.getByTestId('manual').click();
+
+  await expect(page.getByTestId('pickup')).toContainText('Your location');
+  await expect(page.getByTestId('estimate-instruction')).toContainText('drop-off (B)');
+
+  await page.locator('app-estimate [data-testid=place-search] input').fill('NEUST');
+  await page.locator('app-estimate [data-testid=place-result]').first().click();
+
+  await expect(page.getByTestId('dropoff')).toContainText('NEUST');
+  await expect(page.getByTestId('estimate-fare')).toHaveText('₱45');
+  await expect(page.getByTestId('estimate-passenger')).toContainText('Regular');
+});
+
 test('driver: picks the passenger per trip, and the record has no overcharge check', async ({ page }) => {
   await finishOnboarding(page, 'driver');
   await expect(page.getByTestId('role-badge')).toBeVisible();
