@@ -11,3 +11,37 @@
   inset: 0;
   background: #e8eef7;
 }
+
+/* Shown when the view has no map tiles (offline, or the tile server failed). */
+.tile-notice {
+  position: absolute;
+  left: 50%;
+  top: var(--tm-map-notice-top, 40%);
+  transform: translate(-50%, -50%);
+  z-index: 500; /* above the tiles, below the page's own overlays */
+  width: min(300px, calc(100% - 48px));
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--tm-navy-deep, #152a66);
+  box-shadow: 0 6px 20px rgba(27, 42, 92, 0.18);
+  pointer-events: none; /* the map stays usable underneath */
+  font-size: 13px;
+  line-height: 1.4;
+}
+.tile-notice ion-icon {
+  flex: none;
+  font-size: 26px;
+  color: var(--tm-navy, #224194);
+}
+.tile-notice strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.tile-notice span {
+  color: var(--tm-muted, #5a6488);
+}

@@ -283,8 +283,7 @@
       </li>
       <li>
         <b>Validation and errors:</b> the calculator checks the typed distance; a destination closer than 100 m is
-        rejected; failed saves offer a retry; offline, place search explains the problem and road distance falls back to
-        a labelled straight-line estimate.
+        rejected; failed saves offer a retry; offline, the map uses cached tiles and road distance falls back to a straight-line estimate.
       </li>
       <li>
         <b>Navigation:</b> a functional route guard sends first-time users to onboarding; the tabs are Meter, History
@@ -294,9 +293,9 @@
 
     <h2>5. Testing and Evaluation</h2>
     <p>
-      Automated tests: <b>83 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
+      Automated tests: <b>92 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
       receipt breakdown, GPS filter, history search, calculator validation, settings, roles and pages, and
-      <b>10 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
+      <b>11 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
       Mall → NEUST, from OSRM) as GPS fixes, with the online services mocked so results are repeatable. All automated
       tests pass, and <code>ng lint</code> is clean.
     </p>
@@ -374,9 +373,9 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Offline place search / road distance</td>
-        <td>Clear message; straight-line fallback</td>
-        <td>As expected (unit test)</td>
+        <td>Offline map and search</td>
+        <td>Cached map; clear messages</td>
+        <td>As expected (emulator)</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>

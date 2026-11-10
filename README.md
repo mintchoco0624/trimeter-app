@@ -12,6 +12,7 @@ TriMeter measures the real distance of a tricycle ride with the phone's GPS and 
 |---|---|
 | Onboarding with role selection (commuter / tricycle driver) and passenger type (Regular, Student, Senior, PWD) | `src/app/pages/onboarding/onboarding.page.ts`, `src/app/services/settings.ts` |
 | Live GPS fare meter: Leaflet map, GPS signal and offline indicators, trip status, haptics | `src/app/pages/meter/meter.page.ts`, `src/app/services/location.ts` |
+| Offline map: viewed map tiles are cached on the phone; zooming in offline enlarges cached tiles; a note explains areas that need internet; zoom limited to street level | `src/app/components/trip-map/` |
 | Commuter: “Where to?” search with road distance and fare preview before the ride | `src/app/components/place-search/`, `src/app/services/routing.ts` |
 | Driver: passenger type chosen per trip; History becomes “Trips” records | `src/app/pages/meter/meter.page.ts`, `src/app/pages/tabs/tabs.page.ts` |
 | Trip rules: confirm before ending, no saving under 50 m, double-tap protection, save retry, Manual mode fallback when GPS fails | `src/app/pages/meter/meter.page.ts` |
@@ -64,9 +65,9 @@ In the browser, allow location access. Chrome DevTools > More tools > Sensors ca
 ### Tests
 
 ```bash
-npm run test:unit      # 83 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
+npm run test:unit      # 92 unit tests (Vitest): fare rules, receipt breakdown, GPS filter, history search, roles, pages
 npx ng serve --port 4200 &   # then, in another terminal:
-npm run test:e2e       # 10 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, manual estimate from your location, resuming a trip after a restart, online services mocked
+npm run test:e2e       # 11 Playwright tests: commuter and driver trips on a replayed 4.56 km GPS route, manual estimate from your location, resuming a trip after a restart, offline map, online services mocked
 npm run lint
 ```
 

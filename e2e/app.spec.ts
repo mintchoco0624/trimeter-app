@@ -9,6 +9,11 @@ const FARE_MATRIX = readFileSync(join(ROOT, 'src/assets/fare-matrix.json'), 'utf
 const OSRM_ROUTE = readFileSync(join(__dirname, 'route-nepacific-neust.json'), 'utf8');
 const ROUTE = loadRoute();
 const [DEST_LNG, DEST_LAT] = ROUTE.at(-1)!;
+/** A 1 x 1 PNG served as every map tile. */
+const TILE = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+  'base64',
+);
 
 /**
  * Every outside service is faked, so the tests do not depend on the internet:
@@ -34,7 +39,9 @@ test.beforeEach(async ({ context }) => {
   await context.route('https://router.project-osrm.org/**', (r) =>
     r.fulfill({ contentType: 'application/json', body: OSRM_ROUTE }),
   );
-  await context.route('https://tile.openstreetmap.org/**', (r) => r.abort());
+  await context.route('https://tile.openstreetmap.org/**', (r) =>
+    r.fulfill({ contentType: 'image/png', body: TILE, headers: { 'access-control-allow-origin': '*' } }),
+  );
 });
 
 async function finishOnboarding(page: Page, role: 'commuter' | 'driver', passenger = 'Regular') {
@@ -241,4 +248,23 @@ test('fare info: official guideline data, city hotline, penalties and a working 
   await page.locator('[data-testid=calc-km] input').fill('4.56');
   await page.locator('app-fare-calculator ion-segment-button', { hasText: 'Student' }).click();
   await expect(page.getByTestId('calc-total')).toHaveText('₱38');
+});
+
+test('offline: the map explains missing tiles while GPS and the meter keep working', async ({ page, context }) => {
+  // Tiles that were never viewed cannot load without internet.
+  await page.route('https://tile.openstreetmap.org/**', (r) => r.abort());
+  await finishOnboarding(page, 'commuter');
+  await context.setOffline(true);
+  await expect(page.getByTestId('map-notice')).toContainText('Map needs internet');
+  await expect(page.getByTestId('map-notice')).toContainText('fare meter still work');
+
+  await pushFix(page, ROUTE[0], Date.now());
+  await page.getByTestId('start').click();
+  await expect(page.getByTestId('trip-status')).toHaveText(/On trip/);
+  await expect(page.getByTestId('fare')).toHaveText('₱35');
+
+  // Back online: the missing tiles are loaded again and the note goes away.
+  await page.unroute('https://tile.openstreetmap.org/**');
+  await context.setOffline(false);
+  await expect(page.getByTestId('map-notice')).toBeHidden();
 });

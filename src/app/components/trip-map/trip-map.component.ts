@@ -1,9 +1,19 @@
 import type { ElementRef, OnDestroy } from '@angular/core';
-import { Component, afterNextRender, effect, input, output, signal, viewChild } from '@angular/core';
+import { Component, afterNextRender, computed, effect, inject, input, output, signal, viewChild } from '@angular/core';
+import { IonIcon } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { cloudOfflineOutline } from 'ionicons/icons';
 import * as L from 'leaflet';
 
 import { environment } from '../../../environments/environment';
 import type { LatLng } from '../../models/trip';
+import { ConnectivityService } from '../../services/connectivity';
+
+import { CachedTileLayer } from './cached-tile-layer';
+
+/** Zoom limits: street level at most (the tile server has no closer tiles), the city region at least. */
+export const MIN_ZOOM = 11;
+export const MAX_ZOOM = 19;
 
 /** Centre of Cabanatuan City (around the public market / city proper). */
 export const CABANATUAN: LatLng = { lat: 15.4866, lng: 120.9667 };
@@ -16,6 +26,7 @@ export const CABANATUAN: LatLng = { lat: 15.4866, lng: 120.9667 };
   selector: 'app-trip-map',
   templateUrl: './trip-map.component.html',
   styleUrls: ['./trip-map.component.scss'],
+  imports: [IonIcon],
 })
 export class TripMapComponent implements OnDestroy {
   /** Points of the route drawn as a line. */
@@ -40,6 +51,20 @@ export class TripMapComponent implements OnDestroy {
 
   private readonly container = viewChild.required<ElementRef<HTMLDivElement>>('map');
   private readonly ready = signal(false);
+  private readonly connectivity = inject(ConnectivityService);
+  /** True when tiles of the current view could not be loaded (and are not in the tile cache). */
+  private readonly tilesFailed = signal(false);
+
+  /** Note shown over the map when it has no tiles to draw, so a grey map is never a mystery. */
+  readonly tileNotice = computed(() => {
+    if (!this.tilesFailed()) return null;
+    return this.connectivity.online()
+      ? { title: 'Map could not load', body: 'Check your connection. GPS and the fare meter still work.' }
+      : {
+          title: 'Map needs internet',
+          body: 'GPS and the fare meter still work offline. Places you viewed before stay on the map.',
+        };
+  });
 
   private map?: L.Map;
   private line?: L.Polyline;
@@ -48,8 +73,15 @@ export class TripMapComponent implements OnDestroy {
   private start?: L.Marker;
   private end?: L.Marker;
   private resizeObserver?: ResizeObserver;
+  private tiles?: L.TileLayer;
 
   constructor() {
+    addIcons({ cloudOfflineOutline });
+
+    // Back online: reload the tiles that failed.
+    effect(() => {
+      if (this.connectivity.online() && this.ready() && this.tilesFailed()) this.tiles?.redraw();
+    });
     // Leaflet needs a real DOM element with a size, so create the map after rendering.
     afterNextRender(() => this.createMap());
 
@@ -107,17 +139,28 @@ export class TripMapComponent implements OnDestroy {
 
   private createMap(): void {
     const el = this.container().nativeElement;
-    this.map = L.map(el, { zoomControl: false, attributionControl: false }).setView(
+    this.map = L.map(el, {
+      zoomControl: false,
+      attributionControl: false,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      // Zooming past the limit bounces back instead of showing an empty grey map.
+      bounceAtZoomLimits: true,
+    }).setView(
       [CABANATUAN.lat, CABANATUAN.lng],
       14,
     );
     if (this.showAttribution()) {
       L.control.attribution({ position: this.attributionPosition(), prefix: false }).addTo(this.map);
     }
-    L.tileLayer(environment.tileUrl, {
-      maxZoom: 19,
+    this.tiles = new CachedTileLayer(environment.tileUrl, {
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      // Keep more tiles around the view, so small pans and zooms reuse what is already loaded.
+      keepBuffer: 4,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
+    this.watchTiles(this.tiles);
 
     this.planLine = L.polyline([], { color: '#224194', weight: 5, opacity: 0.55, dashArray: '8 10' }).addTo(this.map);
     this.line = L.polyline([], { color: '#224194', weight: 6, opacity: 0.9, lineCap: 'round' }).addTo(this.map);
@@ -127,6 +170,17 @@ export class TripMapComponent implements OnDestroy {
     this.resizeObserver = new ResizeObserver(() => this.map?.invalidateSize());
     this.resizeObserver.observe(el);
     this.ready.set(true);
+  }
+
+  /** Counts failed tiles per loading round (a pan or zoom) to show or hide the tile notice. */
+  private watchTiles(layer: L.TileLayer): void {
+    let failed = 0;
+    layer.on('loading', () => (failed = 0));
+    layer.on('tileerror', () => {
+      failed++;
+      this.tilesFailed.set(true);
+    });
+    layer.on('load', () => this.tilesFailed.set(failed > 0));
   }
 
   /** Creates, moves or removes a marker. Uses HTML markers so no image files are needed. */

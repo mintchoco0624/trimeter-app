@@ -1,1 +1,10 @@
 <div #map class="map" role="application" aria-label="Map"></div>
+@if (tileNotice(); as n) {
+<div class="tile-notice" role="status" data-testid="map-notice">
+  <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
+  <div>
+    <strong>{{ n.title }}</strong>
+    <span>{{ n.body }}</span>
+  </div>
+</div>
+}
