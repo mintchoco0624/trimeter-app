@@ -4,362 +4,754 @@
     <meta charset="utf-8" />
     <title>TriMeter: Final Case Study Report</title>
     <style>
+      @font-face {
+        font-family: 'TM Sans';
+        src: local('SF Pro Display'), local('SFProDisplay-Regular'), local('Segoe UI');
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: 'TM Sans';
+        src: local('SF Pro Display Medium'), local('SFProDisplay-Medium'), local('Segoe UI Semibold');
+        font-weight: 500 600;
+      }
+      @font-face {
+        font-family: 'TM Sans';
+        src: local('SF Pro Display Bold'), local('SFProDisplay-Bold'), local('Segoe UI Bold');
+        font-weight: 700 900;
+      }
       @page {
         size: A4;
-        margin: 18mm 18mm 18mm 18mm;
+        margin: 15mm 16mm 15mm;
+      }
+      @page :first {
+        margin: 0;
       }
       :root {
-        --navy: #24419b;
+        --navy: #224194;
+        --navy-deep: #152a66;
+        --ink: #1b2a5c;
         --pink: #f4a5a5;
         --cream: #fbe8d3;
-        --ink: #1b2a5c;
-        --muted: #5b6690;
+        --muted: #5d6585;
+        --line: #dde2ef;
+        --soft: #f4f6fc;
+        --ok: #1f8a4c;
+        --orange: #ff8e52;
+        --purple: #b65ff0;
+        --magenta: #f28deb;
+        --yellow: #fff64d;
+        --green: #ade070;
       }
       * {
         box-sizing: border-box;
       }
       body {
-        font-family: 'Segoe UI', Inter, Arial, sans-serif;
-        color: var(--ink);
-        font-size: 10.5pt;
-        line-height: 1.45;
         margin: 0;
+        font-family: 'TM Sans', 'Segoe UI', Arial, sans-serif;
+        color: var(--ink);
+        font-size: 9.6pt;
+        line-height: 1.42;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
+      .serif,
       h1,
-      h2,
-      h3 {
-        font-family: Georgia, 'Playfair Display', serif;
-        color: var(--navy);
-      }
       h2 {
-        font-size: 15pt;
-        margin: 18px 0 6px;
-        border-bottom: 2px solid var(--pink);
-        padding-bottom: 3px;
-      }
-      h3 {
-        font-size: 11.5pt;
-        margin: 12px 0 4px;
+        font-family: Georgia, 'Playfair Display', serif;
       }
       p {
-        margin: 5px 0;
+        margin: 0 0 5px;
       }
       ul {
-        margin: 4px 0 6px 18px;
-        padding: 0;
+        margin: 3px 0 0;
+        padding-left: 15px;
       }
       li {
         margin: 2px 0;
       }
       code {
         font-family: Consolas, 'JetBrains Mono', monospace;
-        font-size: 9pt;
-        background: #eef1f8;
+        font-size: 8.4pt;
+        background: #eaeef9;
         padding: 0 3px;
         border-radius: 3px;
       }
-      table {
+      a {
+        color: var(--navy);
+      }
+
+      /* ---------- Cover ---------- */
+      .cover {
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        overflow: hidden;
+        background: radial-gradient(120mm 90mm at 30% 22%, #3254b8 0%, var(--navy) 45%, var(--navy-deep) 100%);
+        color: #fff;
+        padding: 30mm 22mm 20mm;
+        page-break-after: always;
+      }
+      .dots {
+        position: absolute;
+        top: 16mm;
+        right: 16mm;
+        display: flex;
+      }
+      .dots span {
+        width: 15mm;
+        height: 15mm;
+        border-radius: 50%;
+        margin-left: -4mm;
+        opacity: 0.95;
+      }
+      .cover .logo {
+        width: 44mm;
+        border-radius: 9mm;
+        box-shadow: 0 6mm 14mm rgba(0, 0, 0, 0.35);
+      }
+      .cover h1 {
+        font-size: 52pt;
+        margin: 9mm 0 2mm;
+        letter-spacing: -0.5pt;
+      }
+      .cover .sub {
+        font-size: 16pt;
+        color: var(--cream);
+        margin: 0;
+      }
+      .cover .course {
+        margin-top: 8mm;
+        display: flex;
+        gap: 3mm;
+      }
+      .chip {
+        display: inline-block;
+        padding: 1.6mm 4mm;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 10pt;
+        background: var(--cream);
+        color: var(--navy-deep);
+      }
+      .chip.pink {
+        background: var(--pink);
+      }
+      .cover .members {
+        margin-top: 14mm;
+      }
+      .cover .label {
+        font-size: 9pt;
+        letter-spacing: 1.5pt;
+        text-transform: uppercase;
+        color: var(--pink);
+        font-weight: 700;
+        margin-bottom: 2mm;
+      }
+      .cover .members p {
+        font-size: 14pt;
+        margin: 0 0 1mm;
+      }
+      .links {
+        position: absolute;
+        left: 22mm;
+        right: 22mm;
+        bottom: 20mm;
+        display: flex;
+        gap: 6mm;
+      }
+      .linkcard {
+        flex: 1;
+        display: flex;
+        gap: 5mm;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 5mm;
+        padding: 4mm;
+      }
+      .linkcard img {
+        width: 26mm;
+        border-radius: 2mm;
+        background: #fff;
+      }
+      .linkcard p {
+        margin: 0;
+        font-size: 9pt;
+        color: #dfe5f7;
+      }
+      .linkcard b {
+        display: block;
+        font-size: 12pt;
+        color: #fff;
+        margin-bottom: 1mm;
+      }
+      .linkcard a {
+        color: var(--cream);
+        word-break: break-all;
+      }
+
+      /* ---------- Section headers ---------- */
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 3mm;
+        font-size: 17pt;
+        color: var(--navy);
+        margin: 7mm 0 1mm;
+        break-after: avoid;
+      }
+      h2 .num {
+        font-family: 'TM Sans', 'Segoe UI', sans-serif;
+        font-size: 10pt;
+        font-weight: 800;
+        color: var(--navy-deep);
+        background: var(--pink);
+        border-radius: 99px;
+        padding: 1mm 3mm;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 10pt;
+        margin: 0 0 3.5mm;
+      }
+      h3 {
+        font-size: 10.5pt;
+        margin: 0 0 1.5mm;
+        color: var(--navy);
+      }
+      h4 {
+        font-size: 9.6pt;
+        margin: 0 0 1mm;
+        color: var(--navy-deep);
+      }
+
+      /* ---------- Building blocks ---------- */
+      .grid {
+        display: grid;
+        gap: 3mm;
+      }
+      .g2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .g3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .g4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .card {
+        background: var(--soft);
+        border-radius: 3.5mm;
+        padding: 3.2mm 3.6mm;
+        border-top: 1.4mm solid var(--navy);
+        break-inside: avoid;
+      }
+      .card.pink {
+        border-top-color: var(--pink);
+      }
+      .card.green {
+        border-top-color: var(--green);
+      }
+      .card.orange {
+        border-top-color: var(--orange);
+      }
+      .card.purple {
+        border-top-color: var(--purple);
+      }
+      .card p:last-child,
+      .card ul:last-child {
+        margin-bottom: 0;
+      }
+      .kv p {
+        margin: 0;
+        font-size: 8.4pt;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6pt;
+      }
+      .kv b {
+        display: block;
+        font-size: 10.5pt;
+        color: var(--ink);
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .steps {
+        counter-reset: s;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3mm;
+        margin-top: 3mm;
+      }
+      .steps .card {
+        position: relative;
+        padding-top: 6mm;
+        border-top: none;
+        background: #fff;
+        border: 1px solid var(--line);
+      }
+      .steps .card::before {
+        counter-increment: s;
+        content: counter(s);
+        position: absolute;
+        top: -3mm;
+        left: 3.5mm;
+        width: 6.5mm;
+        height: 6.5mm;
+        border-radius: 50%;
+        background: var(--navy);
+        color: #fff;
+        font-weight: 800;
+        font-size: 9pt;
+        display: grid;
+        place-items: center;
+      }
+      .stat {
+        text-align: center;
+        background: var(--navy);
+        color: #fff;
+        border-radius: 3.5mm;
+        padding: 3mm 2mm;
+      }
+      .stat b {
+        display: block;
+        font-family: Georgia, serif;
+        font-size: 22pt;
+        line-height: 1.1;
+        color: var(--green);
+      }
+      .stat p {
+        margin: 0;
+        font-size: 8.6pt;
+      }
+      .big {
+        font-family: Georgia, serif;
+        font-size: 26pt;
+        line-height: 1;
+        color: #e5484d;
+        margin: 1mm 0;
+      }
+      .tags span {
+        display: inline-block;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        padding: 0.6mm 2.4mm;
+        margin: 0 1mm 1.2mm 0;
+        font-size: 8.6pt;
+      }
+      .scope {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3mm;
+        margin-top: 3mm;
+      }
+      .scope .card {
+        border-top: none;
+        border-left: 1.4mm solid var(--ok);
+      }
+      .scope .card.later {
+        border-left-color: #a7aec8;
+        color: var(--muted);
+      }
+
+      /* ---------- Features ---------- */
+      .shots {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3mm 4mm;
+      }
+      .shots figure {
+        margin: 0;
+        break-inside: avoid;
+      }
+      .shots img {
         width: 100%;
-        border-collapse: collapse;
-        margin: 6px 0 8px;
-        font-size: 9.5pt;
+        border-radius: 3mm;
+        border: 1px solid #cdd4e8;
+        display: block;
+      }
+      .shots figcaption {
+        margin-top: 1.4mm;
+        font-size: 8.4pt;
+        line-height: 1.3;
+        color: var(--muted);
+      }
+      .shots figcaption b {
+        display: block;
+        color: var(--ink);
+        font-size: 9pt;
+      }
+
+      /* ---------- Technical ---------- */
+      .arch {
+        display: grid;
+        grid-template-columns: 1fr 10mm 1fr 10mm 1fr;
+        align-items: stretch;
+        margin: 1mm 0 3mm;
+      }
+      .arch .col {
+        border-radius: 3.5mm;
+        padding: 2.8mm 3mm;
+        background: var(--soft);
+      }
+      .arch .col.dark {
+        background: var(--navy);
+        color: #fff;
+      }
+      .arch .col.dark h4 {
+        color: var(--cream);
+      }
+      .arch .col.dark p {
+        color: #dfe5f7;
+      }
+      .arch .arrow {
+        display: grid;
+        place-items: center;
+        color: var(--pink);
+        font-size: 16pt;
+        font-weight: 800;
+      }
+      .arch p {
+        margin: 0;
+        font-size: 8.6pt;
+      }
+      .formula {
+        font-family: Consolas, monospace;
+        font-size: 9pt;
+        background: var(--navy-deep);
+        color: var(--cream);
+        border-radius: 2.5mm;
+        padding: 2mm 3mm;
+        margin: 1.5mm 0;
+      }
+      .pill {
+        display: inline-block;
+        border-radius: 99px;
+        padding: 0.4mm 2.2mm;
+        font-size: 8.4pt;
+        font-weight: 700;
+        background: #ffe3e3;
+        color: #b4232b;
+        margin: 0 1mm 1mm 0;
+      }
+      .flow {
+        display: flex;
+        align-items: center;
+        gap: 1.5mm;
+        flex-wrap: wrap;
+        font-size: 8.4pt;
+        margin: 1mm 0 1.5mm;
+      }
+      .flow span {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        padding: 0.4mm 2.2mm;
+      }
+      .flow i {
+        color: var(--pink);
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      /* ---------- Testing ---------- */
+      table {
+        break-inside: auto;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 8.6pt;
+        margin: 3mm 0;
+        border-radius: 3mm;
+        overflow: hidden;
+        border: 1px solid var(--line);
       }
       th {
         background: var(--navy);
         color: #fff;
         text-align: left;
-        padding: 5px 7px;
+        padding: 1.8mm 2.4mm;
+        font-weight: 700;
+      }
+      tr {
+        break-inside: avoid;
       }
       td {
-        padding: 5px 7px;
-        border-bottom: 1px solid #dde2ef;
+        padding: 1.5mm 2.4mm;
+        border-top: 1px solid var(--line);
         vertical-align: top;
       }
       tr:nth-child(even) td {
-        background: #f6f8fc;
+        background: var(--soft);
       }
-      .pass {
-        color: #13803f;
+      td.pass,
+      td.future {
         font-weight: 700;
+        white-space: nowrap;
       }
-      .todo {
+      td.pass {
+        color: var(--ok);
+      }
+      td.future {
         color: #a36b00;
-        font-weight: 700;
       }
-      .cover {
-        height: 255mm;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        page-break-after: always;
-      }
-      .cover img {
-        width: 160px;
-        border-radius: 22px;
-      }
-      .cover h1 {
-        font-size: 40pt;
-        margin: 18px 0 4px;
-      }
-      .cover .sub {
-        font-size: 15pt;
+
+      /* ---------- References ---------- */
+      .refs {
+        font-size: 8.4pt;
         color: var(--muted);
-      }
-      .cover .meta {
-        margin-top: 36px;
-        font-size: 11.5pt;
-        line-height: 1.7;
-      }
-      .shots {
-        display: flex;
-        gap: 8px;
-        margin: 8px 0;
-      }
-      .shots figure {
-        margin: 0;
-        flex: 1;
-        text-align: center;
-        font-size: 8pt;
-        color: var(--muted);
-      }
-      .shots img {
-        width: 100%;
-        border-radius: 8px;
-        border: 1px solid #ccd3e6;
-      }
-      .note {
-        background: #fff6e0;
-        border-left: 4px solid #e0a800;
-        padding: 6px 9px;
-        font-size: 9.5pt;
-        margin: 6px 0;
-      }
-      .refs li {
-        font-size: 9pt;
+        padding-left: 14px;
       }
       .pb {
-        page-break-before: always;
+        break-before: page;
       }
     </style>
   </head>
   <body>
+    <!-- ======================= COVER ======================= -->
     <section class="cover">
-      <img src="img/logo.png" alt="TriMeter logo" />
+      <div class="dots" aria-hidden="true">
+        <span style="background: #ff8e52"></span><span style="background: #b65ff0"></span
+        ><span style="background: #f28deb"></span><span style="background: #fff64d"></span
+        ><span style="background: #ade070"></span>
+      </div>
+      <img class="logo" src="img/logo.png" alt="TriMeter logo" />
       <h1>TriMeter</h1>
-      <div class="sub">A GPS-based tricycle fare meter for Cabanatuan City</div>
-      <div class="meta">
-        <b>Mobile Application Technology: Final Case Study</b><br />
-        BSIT-4C<br /><br />
-        <b>Group members</b><br />
-        John Mathew Ramoso<br />
-        Neo Arwen De Guzman<br />
-        Charles Benedict Leodones<br /><br />
-        <b>Project files (APK, videos, report):</b><br />
-        <a href="https://drive.google.com/drive/folders/1hdRMXyUeRpWf_8WkOR_Ug4uUComGYyPd">Google Drive folder</a><br />
-        <b>Source code:</b>
-        <a href="https://github.com/mintchoco0624/trimeter-app">https://github.com/mintchoco0624/trimeter-app</a>
+      <p class="sub">Fair fares for every tricycle ride: a GPS fare meter for Cabanatuan City</p>
+      <div class="course">
+        <span class="chip pink">BSIT-4C</span><span class="chip">Mobile Application Technology · Final Case Study</span>
+      </div>
+      <div class="members">
+        <div class="label">Group members</div>
+        <p>John Mathew Ramoso</p>
+        <p>Neo Arwen De Guzman</p>
+        <p>Charles Benedict Leodones</p>
+      </div>
+      <div class="links">
+        <div class="linkcard">
+          <img src="img/qr-drive.png" alt="QR code: Google Drive folder" />
+          <div>
+            <p><b>Project files</b>APK, videos and this report</p>
+            <p>
+              <a href="https://drive.google.com/drive/folders/1hdRMXyUeRpWf_8WkOR_Ug4uUComGYyPd">Google Drive folder</a>
+            </p>
+          </div>
+        </div>
+        <div class="linkcard">
+          <img src="img/qr-repo.png" alt="QR code: GitHub repository" />
+          <div>
+            <p><b>Source code</b>With setup instructions (README)</p>
+            <p><a href="https://github.com/mintchoco0624/trimeter-app" style="white-space: nowrap; font-size: 8.2pt">github.com/mintchoco0624/trimeter-app</a></p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <h2>1. Project Information</h2>
-    <p>
-      <b>Title:</b> TriMeter: a GPS-based tricycle fare meter for Cabanatuan City. <b>Platform:</b> Android (Ionic 9,
-      Angular 22 standalone components, Capacitor 8). <b>Members:</b> John Mathew Ramoso, Neo Arwen De Guzman, Charles
-      Benedict Leodones (BSIT-4C). <b>Version:</b> 1.5 (Android APK).
-    </p>
-    <p>
-      <b>Installation and access.</b> (1) Download <code>TriMeter.apk</code> from the project's
-      <a href="https://drive.google.com/drive/folders/1hdRMXyUeRpWf_8WkOR_Ug4uUComGYyPd">Google Drive folder</a> to an Android phone (Android 7.0 or later). (2) Open the file; if
-      Android asks, allow <i>Install unknown apps</i> for the browser or Files app, then tap <i>Install</i>. (3) Open
-      TriMeter, choose a role and passenger type, and allow location access <i>while using the app</i>. No account,
-      password or API key is needed, and all trips stay on the phone. Internet is used only for place names, road
-      distance, map tiles and fare-matrix updates; the meter itself works offline. <b>Quick test:</b> on the Meter
-      tap <i>Start Trip</i>, move about 100 m or more, then <i>End Trip</i> to get a receipt; or tap the
-      <i>Manual estimate</i> button and search a drop-off to see a fare without moving. Source setup (Node.js 20+):
-      <code>npm install</code>, then <code>npx ng serve</code>; build the APK with <code>npx ng build</code>,
-      <code>npx cap sync android</code> and <code>gradlew assembleDebug</code> (see the README).
-    </p>
-
-    <h2>2. Problem and Proposed Solution</h2>
-    <p>
-      <b>Problem.</b> Cabanatuan City is known as the “Tricycle Capital of the Philippines”, and thousands of commuters
-      ride tricycles every day. The city has an official fare matrix, but fares in practice are inconsistent: TODAs
-      apply their own rates, drivers estimate by feel, and studies describe overcharging as rampant, with drivers
-      charging up to 300% more than the prescribed rates. Passengers, especially students, seniors, PWDs and visitors,
-      have no easy way to check the fair fare.
-    </p>
-    <p>
-      <b>Intended users.</b> Primary: commuters (students, workers, seniors, PWDs, tourists). Secondary: tricycle
-      drivers, who gain a neutral reference that prevents disputes.
-    </p>
-    <p>
-      <b>Proposed solution.</b> A mobile app that measures the real distance of a ride with the phone's GPS and applies
-      the city fare matrix live, then gives a receipt with a fare breakdown and an overcharge check. The group's
-      original proposal also included accounts, ID-verified discounts, multiple languages, real-time gas prices, driver
-      QR pairing and an LGU dashboard. These were set aside as future improvements to keep the scope realistic for a
-      two-week project.
-    </p>
-
-    <h2>3. Application Features</h2>
-    <div class="shots">
-      <figure><img src="img/v11-role.jpg" alt="" />Role selection</figure>
-      <figure><img src="img/v11-meter-estimate.jpg" alt="" />Commuter meter with fare preview</figure>
-      <figure><img src="img/v11-driver-meter.jpg" alt="" />Driver meter</figure>
-      <figure><img src="img/v11-receipt.jpg" alt="" />Receipt and overcharge check</figure>
-      <figure><img src="img/v11-history.jpg" alt="" />History with search and filters</figure>
-      <figure><img src="img/v11-calculator.jpg" alt="" />Fare calculator</figure>
+    <!-- ======================= 1 ======================= -->
+    <h2><span class="num">01</span>Project Information</h2>
+    <p class="lead">An Android app that meters a tricycle ride with GPS and shows the fair fare from the city ordinance.</p>
+    <div class="grid g4 kv">
+      <div class="card"><p>Title<b>TriMeter</b></p></div>
+      <div class="card pink"><p>Platform<b>Android APK v1.5</b></p></div>
+      <div class="card green"><p>Built with<b>Ionic 9 · Angular 22 · Capacitor 8</b></p></div>
+      <div class="card orange"><p>Group<b>Ramoso · De Guzman · Leodones</b></p></div>
     </div>
-    <ul>
-      <li>
-        <b>Onboarding and roles:</b> the user chooses <i>Commuter</i> or <i>Tricycle driver</i> (as in the proposal
-        prototype). Roles are separate from the passenger type (Regular, Student, Senior, PWD), which sets the fare.
-      </li>
-      <li>
-        <b>Live meter (automatic mode):</b> a commuter can search “Where to?” and see the road distance and expected
-        fare before riding; a driver picks the passenger type for each trip. After <i>Start Trip</i>, the map draws the
-        route and the distance, time and fare update live, with a GPS signal indicator, an offline indicator and the
-        trip status. Map areas already viewed are cached, so the map still shows offline (zooming in enlarges the cached
-        map; unvisited areas show a short note). <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip. If the app
-        closes or crashes mid-trip, the Meter offers to resume it.
-      </li>
-      <li>
-        <b>Trip receipt:</b> route map, places, distance, time, passenger type and a fare breakdown (base fare,
-        additional distance, regular fare, discount, final fare). Commuters can type what the driver asked to see any
-        overcharge in pesos and percent. The receipt can be shared.
-      </li>
-      <li>
-        <b>Manual estimate (backup mode):</b> pick-up starts at your current location, so you only search or tap the
-        drop-off to get the road distance and fare. The app offers it whenever GPS is unavailable.
-      </li>
-      <li>
-        <b>History:</b> trip cards with date, places, distance, duration, passenger type, regular fare, discount, final
-        fare and status; search by place, date filter, sorting, totals, and delete with confirmation.
-      </li>
-      <li>
-        <b>Fare info and Account:</b> the fare matrix (ordinance no., effective date, source, status), a fare
-        calculator, example fares, 8 FAQs and complaint steps. Account holds the local profile, role switch, discount
-        and privacy information, and log out.
-      </li>
-    </ul>
+    <h3 style="margin-top: 4mm">Install and try it</h3>
+    <div class="steps">
+      <div class="card">
+        <h4>Download</h4>
+        <p><code>TriMeter.apk</code> from the Drive folder (Android 7+).</p>
+      </div>
+      <div class="card">
+        <h4>Install</h4>
+        <p>Open the file; allow <i>Install unknown apps</i> if asked.</p>
+      </div>
+      <div class="card">
+        <h4>Set up</h4>
+        <p>Pick a role and passenger type; allow location <i>while using the app</i>.</p>
+      </div>
+      <div class="card">
+        <h4>Try</h4>
+        <p><i>Start Trip</i>, move 100 m+, <i>End Trip</i>. Or use <i>Manual estimate</i>.</p>
+      </div>
+    </div>
+    <p style="margin-top: 2.5mm; font-size: 8.6pt; color: var(--muted)">
+      No account, password or API key. Trips stay on the phone. Source: <code>npm install</code> →
+      <code>npx ng serve</code>; APK: <code>npx ng build</code> → <code>npx cap sync android</code> →
+      <code>gradlew assembleDebug</code>.
+    </p>
 
-    <h2>4. Technical Implementation</h2>
-    <p>
-      The project was created with the standard Ionic workflow:
-      <code>ionic start trimeter-app blank --type=angular-standalone --capacitor</code>, then every feature was
-      generated with <code>ionic generate</code>, so each has its own TypeScript, HTML, SCSS and test file. The app has
-      8 pages, 4 reusable components (map, fare breakdown, place search, fare calculator), 9 services, 1 route guard, 2
-      pipes and 3 model files. Pages only display data; the work is done in services. The Android project was added with
-      <code>ionic capacitor add android</code>.
-    </p>
-    <h3>Capacitor capabilities</h3>
-    <ul>
-      <li>
-        <b>Geolocation</b> (<code>services/location.ts</code>): <code>watchPosition</code> with high accuracy (about one
-        fix every 2 s on Android). Each fix passes <code>judgeFix()</code>, which rejects fixes less accurate than 35 m,
-        movements under 5 m (jitter while waiting) and jumps faster than 30 m/s. Accepted fixes extend the route, and
-        the distance is summed with the haversine formula. Results are Angular signals, so the UI updates automatically.
-        The Screen Wake Lock API keeps the screen on during a trip. Before the first permission prompt the app explains
-        why it needs location, and it tracks only between <i>Start Trip</i> and <i>End Trip</i>.
-      </li>
-      <li>
-        <b>Haptics</b> (<code>services/feedback.ts</code>): a light tap when the fare increases, and stronger taps at
-        the start and end of a trip.
-      </li>
-      <li>
-        <b>Share</b>: the receipt is shared as plain text, or copied to the clipboard where sharing is unavailable.
-      </li>
-      <li><b>Map:</b> Leaflet with OpenStreetMap tiles (<code>components/trip-map</code>).</li>
-    </ul>
-    <h3>Fare computation</h3>
-    <p>
-      <code>services/fare.ts</code> is a pure function. The base fare covers the first 3 km, and each succeeding
-      kilometre adds the per-km rate, with a part of a km charged as a full km (<code>Math.ceil</code>). The distance is
-      rounded to 10 m first, so GPS noise (e.g. 3.004 km) is not billed as an extra km. Students, seniors and PWDs use
-      the discounted column. The rates follow the official Cabanatuan City Tricycle Fare Guidelines for City Ordinance
-      No. 050-2026 (dated April 14, 2026): ₱35 / ₱28 for the first 3 km and ₱5 per succeeding km for all passengers, per
-      passenger (at most 3 per trip), with 11 gasoline-price bands up to ₱150–₱159.99/L.
-    </p>
-    <h3>Data handling</h3>
-    <ul>
-      <li>
-        <b>HttpClient GET</b> (<code>services/fare-matrix.ts</code>): uses the <code>inject(HttpClient)</code> /
-        <code>subscribe({ next, error })</code> pattern from class to load the fare matrix JSON. If the online copy
-        fails, the app uses the copy saved in Preferences, then the copy bundled in <code>assets/</code>. Fare changes
-        can therefore reach users without a new APK. GET requests also call OpenStreetMap Nominatim (place names) and
-        OSRM (road distance). All endpoints are public and need no API keys.
-      </li>
-      <li>
-        <b>Local data</b> (<code>services/trip-storage.ts</code>): Capacitor Preferences stores the trip history as JSON
-        with create (<code>add</code>), read (<code>load</code>/<code>get</code>), update (<code>update</code>: what the
-        driver asked) and delete (<code>remove</code>/<code>clear</code>). The local profile (role, name, passenger
-        type, gas band) is stored the same way; there is no server account. The trip in progress is also saved every 5
-        seconds (<code>services/trip-recovery.ts</code>), so it can be resumed after a crash. History search, date
-        filter and sorting are a pure function (<code>services/trip-query.ts</code>) so they are unit-tested.
-      </li>
-      <li>
-        <b>Validation and errors:</b> the calculator checks the typed distance; a destination closer than 100 m is
-        rejected; failed saves offer a retry; offline, the map uses cached tiles and road distance falls back to a straight-line estimate.
-      </li>
-      <li>
-        <b>Navigation:</b> a functional route guard sends first-time users to onboarding; the tabs are Meter, History
-        (drivers: Trips), Fare Info and Account. Android permissions: fine and coarse location, internet, vibrate.
-      </li>
-    </ul>
+    <!-- ======================= 2 ======================= -->
+    <h2><span class="num">02</span>Problem and Proposed Solution</h2>
+    <p class="lead">Cabanatuan is the “Tricycle Capital of the Philippines”, yet riders cannot check what a ride should cost.</p>
+    <div class="grid g3">
+      <div class="card pink">
+        <h3>Problem</h3>
+        <p class="big">300%</p>
+        <p>Studies report drivers charging up to 300% above the prescribed rate. TODAs apply their own rates and many drivers estimate by feel.</p>
+      </div>
+      <div class="card">
+        <h3>Intended users</h3>
+        <p class="tags"><span>Students</span><span>Workers</span><span>Seniors</span><span>PWDs</span><span>Tourists</span></p>
+        <p>Plus <b>tricycle drivers</b>, who get a neutral meter that prevents disputes.</p>
+      </div>
+      <div class="card green">
+        <h3>Solution</h3>
+        <p>Measure the real distance with GPS, apply the official fare matrix live, then give a receipt with a breakdown and an overcharge check.</p>
+      </div>
+    </div>
+    <div class="scope">
+      <div class="card">
+        <h4>Built now</h4>
+        <p>GPS meter · commuter &amp; driver roles · fare preview &amp; calculator · receipts &amp; overcharge check · history · manual estimate · offline map</p>
+      </div>
+      <div class="card later">
+        <h4>Future improvements</h4>
+        <p>Real accounts · ID-verified discounts · Filipino language · real-time gas prices · driver QR pairing · LGU dashboard</p>
+      </div>
+    </div>
 
-    <h2>5. Testing and Evaluation</h2>
-    <p>
-      Automated tests: <b>92 unit tests</b> (Vitest) for the fare rules, the fare data against the city guideline,
-      receipt breakdown, GPS filter, history search, calculator validation, settings, roles and pages, and
-      <b>11 end-to-end tests</b> (Playwright, Chrome). The end-to-end tests replay a real 4.56 km road route (NE Pacific
-      Mall → NEUST, from OSRM) as GPS fixes, with the online services mocked so results are repeatable. All automated
-      tests pass, and <code>ng lint</code> is clean.
+    <!-- ======================= 3 ======================= -->
+    <h2 class="pb"><span class="num">03</span>Application Features</h2>
+    <p class="lead">Four tabs: Meter, History, Fare Info and Account. A typical ride takes three taps.</p>
+    <div class="shots">
+      <figure>
+        <img src="img/s-onboarding-role.jpg" alt="" />
+        <figcaption><b>Choose a role</b>Commuter or driver; passenger type sets the fare.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-meter-destination.jpg" alt="" />
+        <figcaption><b>Fare before the ride</b>Search “Where to?” for road distance and fare.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-meter-live-2.jpg" alt="" />
+        <figcaption><b>Live meter</b>Route, distance and fare update as you ride.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-receipt-overcharge.jpg" alt="" />
+        <figcaption><b>Receipt</b>Breakdown, overcharge check, share, city hotline.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-estimate.jpg" alt="" />
+        <figcaption><b>Manual estimate</b>Starts at your location; pick only the drop-off.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-history.jpg" alt="" />
+        <figcaption><b>History</b>Search, filter by date, sort, swipe to delete.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-fare-calculator.jpg" alt="" />
+        <figcaption><b>Fare Info</b>Official guideline, calculator, FAQs, penalties.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/s-driver-meter.jpg" alt="" />
+        <figcaption><b>Driver mode</b>Pick the passenger per trip; history = records.</figcaption>
+      </figure>
+    </div>
+    <p style="margin-top: 3mm; font-size: 8.8pt">
+      <b>Safety nets:</b> End Trip asks first · trips under 50 m are not charged · a crashed trip can be resumed · the map
+      and meter keep working offline.
     </p>
+
+    <!-- ======================= 4 ======================= -->
+    <h2><span class="num">04</span>Technical Implementation</h2>
+    <p class="lead">Made with the Ionic CLI: 8 pages, 4 components, 9 services, a route guard and 2 pipes. Pages show data; services do the work.</p>
+    <div class="arch">
+      <div class="col">
+        <h4>Pages (UI)</h4>
+        <p>Meter · Estimate · Receipt · History · Fare Info · Account · Onboarding</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="col dark">
+        <h4>Services (logic)</h4>
+        <p>location · fare · fare-matrix · trip-storage · trip-recovery · routing</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="col">
+        <h4>Device &amp; web</h4>
+        <p>Capacitor Geolocation, Preferences, Haptics, Share · HTTP GET APIs</p>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Capacitor Geolocation: fair GPS</h3>
+        <p><code>watchPosition</code> (high accuracy) sends a fix every 1–2 s. <code>judgeFix()</code> rejects:</p>
+        <p><span class="pill">accuracy &gt; 35 m</span><span class="pill">moves &lt; 5 m (jitter)</span><span class="pill">jumps &gt; 30 m/s</span></p>
+        <p>Accepted fixes are summed with the haversine formula into Angular signals, so the screen updates by itself.</p>
+      </div>
+      <div class="card pink">
+        <h3>Fare computation (pure function)</h3>
+        <p class="formula">fare = base + ⌈km − 3⌉ × rate</p>
+        <p>Distance is rounded to 10 m first, so GPS noise is not billed. Rates follow Ordinance No. 050-2026: ₱35 / ₱28 discounted, +₱5 per km, 11 gas-price bands.</p>
+      </div>
+      <div class="card green">
+        <h3>API operations: HttpClient GET</h3>
+        <p class="flow"><span>GitHub JSON</span><i>→</i><span>saved copy</span><i>→</i><span>bundled copy</span></p>
+        <p>New fares reach users without a new APK. GETs also call Nominatim (place names) and OSRM (road distance). No API keys.</p>
+      </div>
+      <div class="card orange">
+        <h3>Data handling: Capacitor Preferences</h3>
+        <p>Trips saved as JSON with full CRUD: add, load, update (amount asked), delete. The trip in progress is saved every 5 s for crash recovery. Map tiles are cached for offline use.</p>
+      </div>
+    </div>
+
+    <!-- ======================= 5 ======================= -->
+    <h2><span class="num">05</span>Testing and Evaluation</h2>
+    <div class="grid g4">
+      <div class="stat"><b>92</b><p>unit tests (Vitest)</p></div>
+      <div class="stat"><b>11</b><p>end-to-end tests (Playwright)</p></div>
+      <div class="stat"><b>2</b><p>device tests: emulator + real ride</p></div>
+      <div class="stat"><b>0</b><p>failing tests · lint clean</p></div>
+    </div>
     <table>
-      <tr>
-        <th>Feature / task tested</th>
-        <th>Expected result</th>
-        <th>Actual result</th>
-        <th>Status</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Feature / task tested</th>
+          <th>Expected result</th>
+          <th>Actual result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
       <tr>
         <td>Role selection (commuter / driver)</td>
-        <td>Role saved; tabs and Meter change</td>
+        <td>Role saved; screens change</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>GPS meter, 4.56 km route, regular</td>
+        <td>GPS meter, 4.56 km route (regular)</td>
         <td>₱45 (₱35 + 2 km × ₱5)</td>
         <td>₱45</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Driver, student passenger, same route</td>
-        <td>₱38; receipt shows ₱45 − ₱7 discount</td>
-        <td>₱38, as expected</td>
+        <td>Same route, student passenger</td>
+        <td>₱38 (₱45 − ₱7 discount)</td>
+        <td>₱38</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Destination preview (commuter)</td>
-        <td>4.6 km by road, ₱45 before the ride</td>
+        <td>Fare preview before the ride</td>
+        <td>4.6 km by road, ₱45</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>GPS jitter while standing still (30 fixes)</td>
+        <td>GPS jitter while standing still</td>
         <td>0.00 km added</td>
         <td>0.00 km</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>End a trip with no distance</td>
-        <td>Not saved; “Discard trip” offered</td>
-        <td>As expected</td>
+        <td>Trip with no distance</td>
+        <td>Not saved as a paid trip</td>
+        <td>“Discard trip” offered</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Save, reload, search and delete a trip</td>
-        <td>Kept after reload; search filters; delete confirmed</td>
+        <td>Save, search and delete trips</td>
+        <td>Kept, filtered, deleted after confirm</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
@@ -370,125 +762,96 @@
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Calculator: 4.56 km student; invalid input</td>
-        <td>₱38; error message for 0 or text</td>
+        <td>Fare data vs. city guideline</td>
+        <td>All 11 gas bands match</td>
         <td>As expected</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Fare data vs. city guideline (11 bands)</td>
-        <td>Every band matches the guideline</td>
-        <td>As expected (unit test)</td>
-        <td class="pass">Pass</td>
-      </tr>
-      <tr>
-        <td>App closed mid-trip, then resumed</td>
-        <td>Distance kept; full trip charged ₱45</td>
-        <td>As expected</td>
-        <td class="pass">Pass</td>
-      </tr>
-      <tr>
-        <td>Offline map and search</td>
-        <td>Cached map; clear messages</td>
-        <td>As expected (emulator)</td>
-        <td class="pass">Pass</td>
-      </tr>
-      <tr>
-        <td>APK 1.3 on emulator, closed mid-trip</td>
+        <td>App closed mid-trip (emulator)</td>
         <td>Trip resumes; student ₱38</td>
-        <td>4.41 km, ₱38; share, call OK</td>
+        <td>4.41 km, ₱38</td>
         <td class="pass">Pass</td>
       </tr>
       <tr>
-        <td>Real ride on an Android phone (APK 1.4)</td>
-        <td>Distance and fare update live</td>
-        <td>2.77 km, 9:04, GPS ±4–6 m; student ₱34</td>
+        <td>Offline map (airplane mode)</td>
+        <td>Cached map; clear note if missing</td>
+        <td>As expected</td>
         <td class="pass">Pass</td>
+      </tr>
+      <tr>
+        <td>Real ride on our Android phone (v1.4)</td>
+        <td>Distance and fare update live</td>
+        <td>2.77 km, 9:04, GPS ±4–6 m → ₱34</td>
+        <td class="pass">Pass</td>
+      </tr>
+      <tr>
+        <td>Tracking with the app in the background</td>
+        <td>Keeps measuring</td>
+        <td>Android may pause GPS</td>
+        <td class="future">Future</td>
       </tr>
     </table>
-    <h3>Issues found and limitations</h3>
-    <ul>
-      <li>
-        During development: the map covered the page header and the bottom panel sat behind the tab bar; the map credit
-        was hidden; a route guard called <code>inject()</code> after <code>await</code>. All were found by testing and
-        fixed.
-      </li>
-      <li>
-        Phone GPS drifts near tall buildings and in bad weather, so the distance can differ slightly from the road
-        distance.
-      </li>
-      <li>
-        The app should stay open during a trip, since Android can pause GPS in the background. If the app is closed or
-        crashes, the trip is saved every 5 seconds and can be resumed; movement while it was closed counts as a straight
-        line.
-      </li>
-      <li>
-        Section 5 of the guideline lists ₱4 per succeeding km for discounted passengers at the base gas price, but its
-        fare box shows ₱5. The group confirmed that ₱5 is charged, so TriMeter uses ₱5.
-      </li>
-      <li>
-        Roles and the profile are stored only on the phone: there is no real login, and discounts depend on the driver
-        checking a valid ID.
-      </li>
-      <li>Maps, place names and manual road distance need an internet connection (the GPS meter itself does not).</li>
-    </ul>
-    <h3>Recommended improvements (from heuristic review)</h3>
-    <ul>
-      <li>
-        A foreground service so tracking continues with the screen off (<i>visibility of system status</i>,
-        <i>error prevention</i>).
-      </li>
-      <li>A passenger counter (up to 3 per trip, as the guideline allows) to show the total fare for a group.</li>
-      <li>
-        A Filipino language option and a larger-text mode; some secondary labels are 11–12 px (<i
-          >match with the real world</i
-        >, accessibility).
-      </li>
-      <li>
-        Later: driver QR pairing, ID-verified discounts and an LGU reporting dashboard from the original proposal.
-      </li>
-    </ul>
+    <div class="grid g2">
+      <div class="card pink">
+        <h3>Issues and limitations</h3>
+        <ul>
+          <li>GPS drifts near tall buildings and in bad weather.</li>
+          <li>The app must stay open; Android can pause GPS in the background.</li>
+          <li>The guideline prints ₱4 and ₱5 per km for discounted riders; we confirmed ₱5 is charged.</li>
+          <li>No real login: discounts rely on the driver checking an ID.</li>
+          <li>Fixed during testing: overlapping map and panels, small A/B pins, a grey map offline.</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <h3>Recommended improvements</h3>
+        <ul>
+          <li>Foreground service so tracking continues with the screen off.</li>
+          <li>Passenger counter for groups of up to 3.</li>
+          <li>Filipino language option and a larger-text mode.</li>
+          <li>Later: verified ID discounts, driver QR pairing, LGU dashboard.</li>
+        </ul>
+      </div>
+    </div>
 
-    <h2>6. AI Usage Disclosure</h2>
-    <p>
-      <b>Tool:</b> Claude Code (Anthropic), an AI coding assistant used in VS Code. <b>How it assisted:</b> scaffolding
-      the project with the Ionic CLI, writing and refactoring the services, pages and tests, implementing the group’s
-      improvement brief (roles, fare calculator, history filters, error handling) and fact-checking the fare data
-      sources. It was used mainly for coding. It also built the animated presentation slides and drafted the narration
-      script; the narration itself was recorded by the group in their own voices. <b>What the group did:</b> reviewed
-      the generated code, ran the unit and end-to-end tests, tested the APK on an Android phone, and fixed the issues
-      found. The group can explain the main code (<code>location.ts</code>, <code>fare.ts</code>,
-      <code>fare-matrix.ts</code>, <code>trip-storage.ts</code>). No passwords, private keys or personal data were used
-      in prompts or code.
-    </p>
-    <p>
-      <b>What the group reviewed, tested and changed:</b> the group supplied the Figma prototype (logo, role icons,
-      colours) and the official city fare guideline (Ordinance No. 050-2026), and confirmed the ₱5 succeeding-kilometer
-      rate for discounted passengers. Testing the APK on our own Android phone, the group found three usability issues
-      that were then fixed: the manual estimate now starts from the current location, the A/B pins were enlarged, and
-      the onboarding screens no longer overlap; a grey map when zooming in offline led to the cached offline map. The
-      group then recorded a real ride (2.77 km, ₱34 student fare, offline) to confirm the meter. Each member recorded
-      and presented their part of the video: John Mathew Ramoso (problem, solution and walkthrough), Neo Arwen
-      De Guzman (walkthrough and GPS code), Charles Benedict Leodones (fare and data code, testing, AI disclosure).
+    <!-- ======================= 6 ======================= -->
+    <h2><span class="num">06</span>AI Usage Disclosure</h2>
+    <div class="grid g3">
+      <div class="card purple">
+        <h3>Tool used</h3>
+        <p><b>Claude Code</b> (Anthropic), an AI coding assistant in VS Code.</p>
+      </div>
+      <div class="card orange">
+        <h3>How it helped</h3>
+        <ul>
+          <li>Scaffolding with the Ionic CLI</li>
+          <li>Writing and refactoring the code</li>
+          <li>Unit and end-to-end tests</li>
+          <li>Our improvement brief; checking fare sources</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <h3>What we did</h3>
+        <ul>
+          <li>Supplied the Figma design and the city fare guideline</li>
+          <li>Reviewed the code and ran all tests</li>
+          <li>Tested on our phone; reported issues that were fixed</li>
+          <li>Recorded a real ride and the narration in our own voices</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top: 2.5mm; font-size: 8.6pt; color: var(--muted)">
+      We can explain the main code (<code>location.ts</code>, <code>fare.ts</code>, <code>fare-matrix.ts</code>,
+      <code>trip-storage.ts</code>). No passwords, private keys or personal data were used.
     </p>
 
-    <h2>References</h2>
+    <!-- ======================= References ======================= -->
+    <h2><span class="num">··</span>References</h2>
     <ul class="refs">
-      <li>
-        BetterCabanatuan. <i>bettercabanatuan-fare</i> (community copy of Ordinance No. 050-2026).
-        https://github.com/BetterCabanatuan/bettercabanatuan-fare
-      </li>
-      <li>
-        City Government of Cabanatuan (2026). <i>Cabanatuan City Tricycle Fare Guidelines</i>, Ordinansa Blg. 050-2026
-        (printed guideline, April 14, 2026).
-      </li>
-      <li>
-        ResearchPublish (2016). Cabanatuan City: Tricycle Capital of the Philippines.
-        https://www.researchpublish.com/upload/book/Cabanatuan%20City-3270.pdf
-      </li>
-      <li>
-        Economic Suitability of Electronic Fare Meters for Tricycle Drivers in Cabanatuan City (2025). ResearchGate.
-      </li>
+      <li>City Government of Cabanatuan (2026). <i>Cabanatuan City Tricycle Fare Guidelines</i>, Ordinansa Blg. 050-2026 (April 14, 2026).</li>
+      <li>BetterCabanatuan. <i>bettercabanatuan-fare</i>. https://github.com/BetterCabanatuan/bettercabanatuan-fare</li>
+      <li>ResearchPublish (2016). <i>Cabanatuan City: Tricycle Capital of the Philippines</i>. https://www.researchpublish.com/upload/book/Cabanatuan%20City-3270.pdf</li>
+      <li><i>Economic Suitability of Electronic Fare Meters for Tricycle Drivers in Cabanatuan City</i> (2025). ResearchGate.</li>
       <li>Ionic Framework, Capacitor and Angular documentation; OpenStreetMap, Nominatim and OSRM.</li>
     </ul>
   </body>
