@@ -154,7 +154,9 @@
         John Mathew Ramoso<br />
         Neo Arwen De Guzman<br />
         Charles Benedict Leodones<br /><br />
-        <b>Project files:</b>
+        <b>Project files (APK, videos, report):</b><br />
+        <a href="https://drive.google.com/drive/folders/1qjkdX7Ucvn2ABc3N0HsxBvtGZu0z-xzY">Google Drive folder</a><br />
+        <b>Source code:</b>
         <a href="https://github.com/mintchoco0624/trimeter-app">https://github.com/mintchoco0624/trimeter-app</a>
       </div>
     </section>
@@ -163,7 +165,19 @@
     <p>
       <b>Title:</b> TriMeter: a GPS-based tricycle fare meter for Cabanatuan City. <b>Platform:</b> Android (Ionic 9,
       Angular 22 standalone components, Capacitor 8). <b>Members:</b> John Mathew Ramoso, Neo Arwen De Guzman, Charles
-      Benedict Leodones (BSIT-4C).
+      Benedict Leodones (BSIT-4C). <b>Version:</b> 1.5 (Android APK).
+    </p>
+    <p>
+      <b>Installation and access.</b> (1) Download <code>TriMeter.apk</code> from the project's
+      <a href="https://drive.google.com/drive/folders/1qjkdX7Ucvn2ABc3N0HsxBvtGZu0z-xzY">Google Drive folder</a> to an Android phone (Android 7.0 or later). (2) Open the file; if
+      Android asks, allow <i>Install unknown apps</i> for the browser or Files app, then tap <i>Install</i>. (3) Open
+      TriMeter, choose a role and passenger type, and allow location access <i>while using the app</i>. No account,
+      password or API key is needed, and all trips stay on the phone. Internet is used only for place names, road
+      distance, map tiles and fare-matrix updates; the meter itself works offline. <b>Quick test:</b> on the Meter
+      tap <i>Start Trip</i>, move about 100 m or more, then <i>End Trip</i> to get a receipt; or tap the
+      <i>Manual estimate</i> button and search a drop-off to see a fare without moving. Source setup (Node.js 20+):
+      <code>npm install</code>, then <code>npx ng serve</code>; build the APK with <code>npx ng build</code>,
+      <code>npx cap sync android</code> and <code>gradlew assembleDebug</code> (see the README).
     </p>
 
     <h2>2. Problem and Proposed Solution</h2>
@@ -204,7 +218,8 @@
         <b>Live meter (automatic mode):</b> a commuter can search “Where to?” and see the road distance and expected
         fare before riding; a driver picks the passenger type for each trip. After <i>Start Trip</i>, the map draws the
         route and the distance, time and fare update live, with a GPS signal indicator, an offline indicator and the
-        trip status. <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip. If the app
+        trip status. Map areas already viewed are cached, so the map still shows offline (zooming in enlarges the cached
+        map; unvisited areas show a short note). <i>End Trip</i> asks for confirmation; a trip under 50 m cannot be saved as a paid trip. If the app
         closes or crashes mid-trip, the Meter offers to resume it.
       </li>
       <li>
@@ -445,10 +460,16 @@
       <code>fare-matrix.ts</code>, <code>trip-storage.ts</code>). No passwords, private keys or personal data were used
       in prompts or code.
     </p>
-    <div class="note">
-      Before submitting, the group should edit this section to describe exactly what each member reviewed and
-      changed.
-    </div>
+    <p>
+      <b>What the group reviewed, tested and changed:</b> the group supplied the Figma prototype (logo, role icons,
+      colours) and the official city fare guideline (Ordinance No. 050-2026), and confirmed the ₱5 succeeding-kilometer
+      rate for discounted passengers. Testing the APK on our own Android phone, the group found three usability issues
+      that were then fixed: the manual estimate now starts from the current location, the A/B pins were enlarged, and
+      the onboarding screens no longer overlap; a grey map when zooming in offline led to the cached offline map. The
+      group then recorded a real ride (2.77 km, ₱34 student fare, offline) to confirm the meter. Each member recorded
+      and presented their part of the video: John Mathew Ramoso (problem, solution and walkthrough), Neo Arwen
+      De Guzman (walkthrough and GPS code), Charles Benedict Leodones (fare and data code, testing, AI disclosure).
+    </p>
 
     <h2>References</h2>
     <ul class="refs">
